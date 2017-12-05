@@ -82,6 +82,8 @@ xnat-web_1    | INFO: Server startup in 84925 ms
 
 Your XNAT will soon be available at http://localhost/xnat.
 
+## Installing plugins and pipeline
+Run add-plugin.sh script
 
 ## Troubleshooting
 
