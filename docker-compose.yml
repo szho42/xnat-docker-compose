@@ -4,6 +4,7 @@ services:
        build: ./tomcat
        ports:
         - "8081:8080"
+        - "8104:8104"
        volumes:
          - ./webapps:/opt/tomcat/webapps
          - ./plugins:/data/xnat/home/plugins
@@ -22,6 +23,7 @@ services:
        build: ./nginx
        ports:
         - "80:80"
+        - "443:443"
        expose: 
         - "80"
        links:
