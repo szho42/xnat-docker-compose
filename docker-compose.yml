@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
     xnat-web:
        build:
@@ -37,7 +37,7 @@ services:
        volumes:
             - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
        command:
-            - '--config.file=/etc/prometheus/prometheus.yaml'
+            - '-config.file=/etc/prometheus/prometheus.yaml'
        ports:
             - '9090:9090'
        links:
