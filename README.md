@@ -23,6 +23,7 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 2. Configurations: The default configuration is sufficient to run the deployment. The following files can be modified if you want to change the default configuration
 
     - **docker-compose.yml**: How the different containers are deployed.
+    - **docker-compose.override.yml**: Overrides/extends default settings in docker-compose.yml(e.g: setting up SSL certificates)
     - **postgres/XNAT.sql**: Database configuration. Mainly used to customize the database user or password. See [Configuring PostgreSQL for XNAT](https://wiki.xnat.org/documentation/getting-started-with-xnat-1-7/installing-xnat-1-7/configuring-postgresql-for-xnat).
     - **tomcat/Dockerfile**: Builds the tomcat image, into which the XNAT war will be deployed.
     - **tomcat/setenv.sh**: Tomcat's launch arguments, set through the `JAVA_OPTS` environment variable.
@@ -41,7 +42,7 @@ wget --quiet --no-cookies https://bintray.com/nrgxnat/applications/download_file
 
 ```
 $ cd xnat-docker-compose
-$ docker-compose up -d
+$ docker-compose -f docker-compose.yml up -d
 ```
 
 Note that at this point, if you go to `localhost/xnat` you won't see a working web application. It takes upwards of a minute
@@ -76,6 +77,26 @@ Your XNAT will soon be available at http://localhost/xnat.
 
 ## Installing plugins and pipeline
 Run add-plugins.sh script
+
+## Setting up SSL certificates for NginX
+Bring down instance if already running
+```
+docker-compose down
+```
+Change working directory to `xnat-docker-compose/nginx/`
+
+Create a directory named as `certs`
+```
+mkdir certs
+```
+Copy SSL certificate file(with root and intermediate certificates as one file) to this directory and name it as `cert.crt` and copy key file to this directory and name it as `key.key`
+
+
+Start the system
+```
+docker-compose up -d 
+
+```
 
 ## Troubleshooting
 
