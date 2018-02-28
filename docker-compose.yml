@@ -9,6 +9,7 @@ services:
          - ./webapps:/opt/tomcat/webapps
          - ./plugins:/data/xnat/home/plugins
          - /var/run/docker.sock:/var/run/docker.sock
+         - ./logs/tomcat:/opt/tomcat/logs
        expose:
         - "8080"
        links:
