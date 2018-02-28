@@ -1,5 +1,7 @@
 #!/bin/bash
 
-wget --quiet --no-cookies https://gitlab.erc.monash.edu.au/mbi-image/xnat-non-dicom-upload-plugin/builds/1251/artifacts/file/out/artifacts/non-dicom-uploader/non-dicom-uploader.jar -O /data/xnat/home/plugins/non-dicom-uploader.jar
+SIMPLE_UPLOAD_LATEST_RELEASE=$(curl -s https://api.github.com/repos/mbi-image/xnat-simple-upload-plugin/releases/latest | grep browser_download_url | cut -d '"' -f 4)
+echo $SIMPLE_UPLOAD_LATEST_RELEASE
+sudo wget --quiet --no-cookies $SIMPLE_UPLOAD_LATEST_RELEASE -O plugins/non-dicom-uploader.jar
 
 docker pull manishkumr/xnat-qc-pipeline
