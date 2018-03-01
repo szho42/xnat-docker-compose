@@ -142,7 +142,14 @@ View a particular log, if you don't want to use docker-compose.
 ```
 docker exec -it $NAME cat /opt/tomcat/logs/catalina.2017-10-24.log
 ```
+Logs are written on docker host for tomcat,nginx and postgres under following directories:
 
+	Postgres : xnat-docker-compose/postgres-data/logs
+    
+	Nginx : xnat-docker-compose/logs/nginx
+        
+	Tomcat : xnat-docker-compose/logs/tomcat
+	
 ### Controlling Instances
 
 #### Stop Instances
