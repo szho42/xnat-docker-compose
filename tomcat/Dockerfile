@@ -64,6 +64,7 @@ WORKDIR /data/xnat
 RUN mkdir archive build cache ftp pipeline prearchive
 
 ADD xnat-conf.properties /data/xnat/home/config
+ADD prefs-init.ini /data/xnat/home/config
 
 EXPOSE 8080
 EXPOSE 8009
