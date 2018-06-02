@@ -10,6 +10,8 @@ services:
        volumes:
          - ./webapps:/opt/tomcat/webapps
          - ./plugins:/data/xnat/home/plugins
+         - ../xnat/archive:/data/xnat/archive
+         - ../xnat/prearchive:/data/xnat/prearchive
          - /var/run/docker.sock:/var/run/docker.sock
        expose:
         - "8080"
@@ -20,7 +22,7 @@ services:
        expose:
          - "5432"
        volumes:
-         - ./postgres-data:/var/lib/postgresql/data
+         - ../xnat/db:/var/lib/postgresql/data
     xnat-nginx:
        build: ./nginx
        ports:
@@ -29,7 +31,6 @@ services:
         - "80"
        links:
          - xnat-web
-
     prometheus:
        image: prom/prometheus
        volumes:
