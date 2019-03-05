@@ -19,7 +19,7 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 ## Usage
 
 
-1. Clone the [xnat-docker-compose](https://github.com/mbi-image/xnat-docker-compose) repository.
+1. Clone the [xnat-docker-compose](https://github.com/MonashBI/xnat-docker-compose) repository.
 2. Configurations: The default configuration is sufficient to run the deployment. The following files can be modified if you want to change the default configuration
 
     - **docker-compose.yml**: How the different containers are deployed.
