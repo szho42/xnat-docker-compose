@@ -19,7 +19,7 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 ## Usage
 
 
-1. Clone the [xnat-docker-compose](https://github.com/NrgXnat/xnat-docker-compose) repository.
+1. Clone the [xnat-docker-compose](https://github.com/MonashBI/xnat-docker-compose) repository.
 
 ```
 $ git clone https://github.com/NrgXnat/xnat-docker-compose
@@ -48,9 +48,13 @@ $ wget --quiet --no-cookies https://api.bitbucket.org/2.0/repositories/xnatdev/x
 
 4. Start the system
 
+Run docker compose "up" command in detached mode ('-d'). On systems with sudo (e.g Linux), you will need to run docker-compose as sudo.
+
 ```
+$ cd xnat-docker-compose
 $ docker-compose up -d
 ```
+
 
 Note that at this point, if you go to `localhost/xnat` you won't see a working web application. It takes upwards of a minute
 to initialize the database, and you can follow progress by reading the docker compose log of the server:
@@ -82,6 +86,28 @@ xnat-web_1    | INFO: Server startup in 84925 ms
 
 Your XNAT will soon be available at http://localhost/xnat.
 
+## Installing plugins and pipeline
+Run add-plugins.sh script
+
+## Setting up SSL certificates for NginX
+Bring down instance if already running
+```
+docker-compose down
+```
+Change working directory to `xnat-docker-compose/nginx/`
+
+Create a directory named as `certs`
+```
+mkdir certs
+```
+Copy SSL certificate file(with root and intermediate certificates as one file) to this directory and name it as `cert.crt` and copy key file to this directory and name it as `key.key`
+
+
+Start the system
+```
+docker-compose up -d 
+
+```
 
 ## Troubleshooting
 

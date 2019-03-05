@@ -1,0 +1,7 @@
+version: '3'
+services:
+    xnat-nginx:
+       volumes:
+          - ./nginx/certs/cert.crt:/etc/nginx/certs/cert.crt
+          - ./nginx/certs/key.key:/etc/nginx/certs/key.key
+          - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
