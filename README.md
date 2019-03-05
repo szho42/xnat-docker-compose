@@ -48,6 +48,8 @@ $ wget --quiet --no-cookies https://api.bitbucket.org/2.0/repositories/xnatdev/x
 
 4. Start the system
 
+Run docker compose "up" command in detached mode ('-d'). On systems with sudo (e.g Linux), you will need to run docker-compose as sudo.
+
 ```
 $ cd xnat-docker-compose
 $ docker-compose up -d
