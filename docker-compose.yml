@@ -1,55 +1,65 @@
 version: '3'
 services:
-    xnat-web:
-       build:
-         context: ./tomcat
-         args:
-           LOCALE: 'en_AU'
-       ports:
-        - "8081:8080"
-        - "8104:8104"
-       volumes:
-         - ./webapps:/opt/tomcat/webapps
-         - ./plugins:/data/xnat/home/plugins
-         - /var/run/docker.sock:/var/run/docker.sock
-       expose:
-        - "8080"
-       links:
-        - xnat-db
-    xnat-db:
-       build: ./postgres
-       expose:
-         - "5432"
-       volumes:
-         - ./postgres-data:/var/lib/postgresql/data
-    xnat-nginx:
-       build: ./nginx
-       ports:
-        - "80:80"
-        - "443:443"
-       expose:
-        - "80"
-       links:
-         - xnat-web
-
-    prometheus:
-       image: prom/prometheus
-       volumes:
-            - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-       command:
-            - '--config.file=/etc/prometheus/prometheus.yaml'
-       ports:
-            - '9090:9090'
-       links:
-            - cadvisor
-    cadvisor:
-        image: google/cadvisor
-        volumes:
-          - /:/rootfs:ro
-          - /var/run:/var/run:rw
-          - /sys:/sys:ro
-          - /var/lib/docker/:/var/lib/docker:ro
-        ports:
-        - "8082:8080"
-        expose:
-          - 8082
+  xnat-web:
+     build:
+       context: ./tomcat
+       args:
+         LOCALE: 'en_AU'
+     ports:
+      - "8081:8080"
+      - "8104:8104"
+     volumes:
+      - ./webapps:/opt/tomcat/webapps
+      - ./plugins:/data/xnat/home/plugins
+      - /data/xnat/archive:/data/xnat/archive
+      - /data/xnat/prearchive:/data/xnat/prearchive
+      - /data/xnat/cache:/data/xnat/cache
+      - /data/xnat/ftp:/data/xnat/ftp
+      - /mnt/cinder/xnat/home/plugins:/data/xnat/home/plugins
+      - /mnt/cinder/xnat/home/logs:/data/xnat/home/logs
+      - /mnt/cinder/xnat/pipeline:/data/xnat/pipeline
+      - /mnt/cinder/xnat/build:/data/xnat/build
+      - /var/run/docker.sock:/var/run/docker.sock
+     expose:
+      - "8080"
+     depends_on:
+      - xnat-db
+     environment:
+      - CATALINA_OPTS=-Xms128m -Xmx1024m -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+      - XNAT_HOME=/data/xnat/home
+  xnat-db:
+     build: ./postgres
+     expose:
+       - "5432"
+     volumes:
+       - /mnt/cinder/xnat/postgres:/var/lib/postgresql/data
+  xnat-nginx:
+     build: ./nginx
+     ports:
+      - "80:80"
+      - "443:443"
+     expose:
+      - "80"
+     links:
+       - xnat-web
+  prometheus:
+     image: prom/prometheus
+     volumes:
+          - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+     command:
+          - '--config.file=/etc/prometheus/prometheus.yaml'
+     ports:
+          - '9090:9090'
+     links:
+          - cadvisor
+  cadvisor:
+      image: google/cadvisor
+      volumes:
+        - /:/rootfs:ro
+        - /var/run:/var/run:rw
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker:ro
+      ports:
+      - "8082:8080"
+      expose:
+        - 8082
