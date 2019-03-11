@@ -9,9 +9,9 @@ services:
       - "8081:8080"
       - "8104:8104"
      volumes:
-      - $CINDER_DIR/home/webapps:/opt/tomcat/webapps
-      - $CINDER_DIR/home/plugins:/data/xnat/home/plugins
-      - $CINDER_DIR/home/logs:/data/xnat/home/logs
+      - $CINDER_DIR/webapps:/opt/tomcat/webapps
+      - $CINDER_DIR/plugins:/data/xnat/home/plugins
+      - $CINDER_DIR/logs:/data/xnat/home/logs
       - $CINDER_DIR/pipeline:/data/xnat/pipeline
       - $CINDER_DIR/build:/data/xnat/build
       - $DATA_DIR/archive:/data/xnat/archive
