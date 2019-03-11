@@ -9,16 +9,15 @@ services:
       - "8081:8080"
       - "8104:8104"
      volumes:
-      - ./webapps:/opt/tomcat/webapps
-      - ./plugins:/data/xnat/home/plugins
-      - /data/xnat/archive:/data/xnat/archive
-      - /data/xnat/prearchive:/data/xnat/prearchive
-      - /data/xnat/cache:/data/xnat/cache
-      - /data/xnat/ftp:/data/xnat/ftp
-      - /mnt/cinder/xnat/home/plugins:/data/xnat/home/plugins
-      - /mnt/cinder/xnat/home/logs:/data/xnat/home/logs
-      - /mnt/cinder/xnat/pipeline:/data/xnat/pipeline
-      - /mnt/cinder/xnat/build:/data/xnat/build
+      - $CINDER_DIR/home/webapps:/opt/tomcat/webapps
+      - $CINDER_DIR/home/plugins:/data/xnat/home/plugins
+      - $CINDER_DIR/home/logs:/data/xnat/home/logs
+      - $CINDER_DIR/pipeline:/data/xnat/pipeline
+      - $CINDER_DIR/build:/data/xnat/build
+      - $DATA_DIR/archive:/data/xnat/archive
+      - $DATA_DIR/prearchive:/data/xnat/prearchive
+      - $DATA_DIR/cache:/data/xnat/cache
+      - $DATA_DIR/ftp:/data/xnat/ftp
       - /var/run/docker.sock:/var/run/docker.sock
      expose:
       - "8080"
@@ -32,7 +31,7 @@ services:
      expose:
        - "5432"
      volumes:
-       - /mnt/cinder/xnat/postgres:/var/lib/postgresql/data
+       - $CINDER_DIR/postgres:/var/lib/postgresql/data
   xnat-nginx:
      build: ./nginx
      ports:

@@ -39,7 +39,7 @@ $ cd xnat-docker-compose
 
 3. Download [latest XNAT WAR](https://download.xnat.org)
 
-Download the latest xnat tomcat war file and place it in a webapps directory that you must create.
+Download the latest xnat tomcat WAR file and place it in a webapps directory that you must create. The name that the war is saved as will be the path to the XNAT web-app relative to the domain name (e.g. my-xnat.com/xnat). If you want the web-app to be accessible from the root of the domain, name the WAR file ROOT.war.
 
 ```
 $ mkdir webapps
@@ -96,12 +96,17 @@ docker-compose down
 ```
 Change working directory to `xnat-docker-compose/nginx/`
 
+### Install your certificates
 Create a directory named as `certs`
 ```
 mkdir certs
 ```
-Copy SSL certificate file(with root and intermediate certificates as one file) to this directory and name it as `cert.crt` and copy key file to this directory and name it as `key.key`
+Copy SSL certificate file to this directory and name it as `cert.crt` and copy key file to this directory and name it as `key.key`. The cert.crt file should also contain any intermediate and root certificates. Root and intermediate certs are combined in plain text by simply copying and pasting in the intermediate and then root certs on subsequent lines.
 
+### Edit nginx-ssl.conf
+
+Edit the nginx-ssl.conf file and replace any occurances of "change.me" with the domain name of the
+server.
 
 Start the system
 ```
