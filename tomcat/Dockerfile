@@ -6,7 +6,7 @@ ARG LOCALE
 
 RUN apt-get -qq update && \
     apt-get -q -y upgrade && \
-    apt-get install -y sudo curl wget locales
+    apt-get install -y sudo curl wget locales vim
 
 # Set locales
 RUN locale-gen $LOCALE.UTF-8
@@ -42,12 +42,6 @@ RUN set -eux; \
         rm /tmp/tomcat.tgz && \
         rm -rf /opt/tomcat/webapps/*
 
-# Add admin/admin user
-ADD tomcat-users.xml /opt/tomcat/conf/
-# add server.xml
-# ADD server.xml /opt/tomcat/conf/
-# Add xnat.home to config
-ADD setenv.sh /opt/tomcat/bin
 ENV CATALINA_HOME /opt/tomcat
 ENV PATH $PATH:$CATALINA_HOME/bin
 
@@ -63,12 +57,9 @@ WORKDIR /data/xnat
 
 RUN mkdir archive build cache ftp pipeline prearchive
 
-ADD xnat-conf.properties /data/xnat/home/config
-
 EXPOSE 8080
 EXPOSE 8009
 VOLUME "/opt/tomcat/webapps"
-ADD setenv.sh /opt/tomcat/bin
 WORKDIR /opt/tomcat
 
 # Launch Tomcat

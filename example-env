@@ -1,0 +1,5 @@
+SITE=xnat.monash.edu
+CINDER_DIR=/mnt/cinder/xnat
+DATA_DIR=/mnt/data/xnat
+TIMEZONE=Australia/Melbourne
+LOCALE=en_AU
