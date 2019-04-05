@@ -22,7 +22,7 @@ services:
        - $DATA_DIR/ftp:/data/xnat/ftp
        - /var/run/docker.sock:/var/run/docker.sock
      expose:
-       - "8080"
+       - "80"
      depends_on:
        - xnat-db
      environment:
@@ -35,17 +35,6 @@ services:
        - "5432"
      volumes:
        - $CINDER_DIR/postgres:/var/lib/postgresql/data
-     environment:
-       - TZ=$TIMEZONE
-  xnat-nginx:
-     build: ./nginx
-     ports:
-      - "80:80"
-      - "443:443"
-     expose:
-      - "80"
-     links:
-       - xnat-web
      environment:
        - TZ=$TIMEZONE
   prometheus:
