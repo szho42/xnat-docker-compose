@@ -30,7 +30,7 @@ $ cd xnat-docker-compose
 
     - **docker-compose.yml**: How the different containers are deployed.
     - **postgres/XNAT.sql**: Database configuration. Mainly used to customize the database user or password. See [Configuring PostgreSQL for XNAT](https://wiki.xnat.org/documentation/getting-started-with-xnat-1-7/installing-xnat-1-7/configuring-postgresql-for-xnat).
-    - **tomcat/Dockerfile**: Builds the tomcat image, into which the XNAT war will be deployed.
+    - **tomcat/server.xml**: Configures the Tomcat server that runs the XNAT web application
     - **tomcat/setenv.sh**: Tomcat's launch arguments, set through the `JAVA_OPTS` environment variable.
     - **tomcat/tomcat-users.xml**: [Tomcat manager](https://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html) settings. It is highly recommended to change the login from "admin" with password "admin" to the server if it is going live.
     - **tomcat/xnat-conf.properties**: XNAT database configuration properties. There is a default version

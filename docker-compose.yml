@@ -21,6 +21,10 @@ services:
        - $DATA_DIR/cache:/data/xnat/cache
        - $DATA_DIR/ftp:/data/xnat/ftp
        - /var/run/docker.sock:/var/run/docker.sock
+       - ./tomcat/server.xml:/opt/tomcat/conf/server.xml
+         #       - ./tomcat/setenv.sh:/opt/tomcat/bin/setenv.sh
+         #       - ./tomcat/tomcat-users.xml:/opt/tomcat/conf/tomcat-users.xml
+         #       - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
      expose:
        - "8080"
      depends_on:
