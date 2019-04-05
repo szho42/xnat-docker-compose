@@ -70,8 +70,9 @@
     -->
     <Connector port="8080" protocol="HTTP/1.1"
                connectionTimeout="40000"
-			   maxHttpHeadersize="65536"
-			   URIEncoding="UTF-8"
+               maxHttpHeadersize="65536"
+               URIEncoding="UTF-8"
+               maxPostSize="67108864"
                redirectPort="8443" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
