@@ -7,3 +7,5 @@
 /.settings
 /WebContent
 nginx/certs
+cinder
+data
