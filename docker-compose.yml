@@ -32,6 +32,16 @@ services:
        - $CINDER_DIR/postgres:/var/lib/postgresql/data
      environment:
        - TZ=$TIMEZONE
+  xnat-backup:
+     build: ./backup
+     depends_on:
+       - xnat-db
+     links:
+       - xnat-db
+     environment:
+       SETUP_CRON: "0 3 * * *"
+     volumes:
+       - ./backups:/backups
   xnat-nginx:
      build: ./nginx
      ports:
