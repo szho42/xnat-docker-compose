@@ -5,7 +5,7 @@ MAINTAINER Manish Kumar <rishimanish123@gmail.com>
 #install postgres client
 RUN apk update \
  && apk add --no-cache --virtual .build-deps \
- postgresql-client
+ bash postgresql-client
 
 # disable default crontab
 
