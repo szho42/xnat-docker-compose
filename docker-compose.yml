@@ -29,7 +29,7 @@ services:
      expose:
        - "5432"
      volumes:
-       - $CINDER_DIR/postgres:/var/lib/postgresql/data
+       - ./postgres-data:/var/lib/postgresql/data
      environment:
        - TZ=$TIMEZONE
   xnat-backup:

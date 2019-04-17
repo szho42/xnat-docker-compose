@@ -21,3 +21,6 @@ services:
     xnat-backup:
        volumes:
           - $BACKUP_DIR:/backups
+    xnat-db:
+       volumes:
+          - $CINDER_DIR/postgres:/var/lib/postgresql/data
