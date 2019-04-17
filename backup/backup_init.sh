@@ -6,4 +6,4 @@ chmod 0644 /etc/cron.d/backup-cron
 
 
 # Run cron.....
-cron -f
+crond -f
