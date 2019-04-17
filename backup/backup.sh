@@ -1,6 +1,6 @@
 BACKUP_DATE="$(date +%Y-%m-%d_%H:%M)"
-BACKUP_FILE="/root/backups/"$BACKUP_DATE"_dump.tar.gz"
-DB_FILE="/root/backups/db.sql"
+BACKUP_FILE="/backups/"$BACKUP_DATE"_dump.tar.gz"
+DB_FILE="/backups/db.sql"
 
 # start backup
 
