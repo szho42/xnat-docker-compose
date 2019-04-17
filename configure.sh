@@ -29,7 +29,7 @@ else
 fi
 
 if [ -z "$BACKUP_DIR" ]; then
-    read -p 'Please enter postgres backup directory (BACKUP_DIR) :' CINDER_DIR
+    read -p 'Please enter postgres backup directory (BACKUP_DIR) :' BACKUP_DIR
 else
     echo "Loaded saved value for BACKUP_DIR=$BACKUP_DIR"
 fi
