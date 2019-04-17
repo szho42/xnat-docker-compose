@@ -115,7 +115,7 @@ docker-compose up -d
 
 ```
 
-## setup postgres backup
+## Setup postgres backup
 Postgres backups are scheduled to run at 0300 hrs everyday but can be configures by modifying `SETUP_CRON` environment under `xnat-backup` service.
 ```
 xnat-backup:
