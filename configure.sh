@@ -28,6 +28,12 @@ else
     echo "Loaded saved value for CINDER_DIR=$CINDER_DIR"
 fi
 
+if [ -z "$BACKUP_DIR" ]; then
+    read -p 'Please enter postgres backup directory (BACKUP_DIR) :' BACKUP_DIR
+else
+    echo "Loaded saved value for BACKUP_DIR=$BACKUP_DIR"
+fi
+
 if [ -z "$TIMEZONE" ]; then
     read -p 'Please enter time-zone for server, e.g. Australia/Melbourne (TIMEZONE):' TIMEZONE
 else

@@ -5,3 +5,22 @@ services:
           - ./nginx/certs/cert.crt:/etc/nginx/certs/cert.crt
           - ./nginx/certs/key.key:/etc/nginx/certs/key.key
           - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
+    xnat-web:
+       volumes:
+          - $CINDER_DIR/webapps:/opt/tomcat/webapps
+          - $CINDER_DIR/plugins:/data/xnat/home/plugins
+          - $CINDER_DIR/auth:/data/xnat/home/auth
+          - $CINDER_DIR/logs/xnat:/data/xnat/home/logs
+          - $CINDER_DIR/logs/tomcat:/opt/tomcat/logs
+          - $CINDER_DIR/pipeline:/data/xnat/pipeline
+          - $CINDER_DIR/build:/data/xnat/build
+          - $DATA_DIR/archive:/data/xnat/archive
+          - $DATA_DIR/prearchive:/data/xnat/prearchive
+          - $DATA_DIR/cache:/data/xnat/cache
+          - $DATA_DIR/ftp:/data/xnat/ftp
+    xnat-backup:
+       volumes:
+          - $BACKUP_DIR:/backups
+    xnat-db:
+       volumes:
+          - $CINDER_DIR/postgres:/var/lib/postgresql/data
