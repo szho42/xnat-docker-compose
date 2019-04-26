@@ -22,10 +22,10 @@ else
     echo "Loaded saved value for DATA_DIR=$DATA_DIR"
 fi
 
-if [ -z "$CINDER_DIR" ]; then
-    read -p 'Please enter "cinder" directory, i.e. can be ephemeral (CINDER_DIR): :' CINDER_DIR
+if [ -z "$APP_DIR" ]; then
+    read -p 'Please enter "app" directory in which to store plugins, caches and logs, i.e. can be ephemeral (APP_DIR): :' APP_DIR
 else
-    echo "Loaded saved value for CINDER_DIR=$CINDER_DIR"
+    echo "Loaded saved value for APP_DIR=$APP_DIR"
 fi
 
 if [ -z "$BACKUP_DIR" ]; then
@@ -47,20 +47,32 @@ else
 fi
 
 echo "---"
-echo "Making required data and cinder directories"
+echo "Writing configuration variables to $(pwd)/.env"
+echo "---"
+echo "\
+
+SITE=$SITE
+DATA_DIR=$DATA_DIR
+APP_DIR=$APP_DIR
+TIMEZONE=$TIMEZONE
+LOCALE=$LOCALE" | tee .env.copy
+echo "---"
+
+echo "---"
+echo "Making required data and app directories"
 echo "---"
 
 # Make all required sub-directories if they aren't present
-read -p "Is it okay to make required sub-directories in $DATA_DIR and $CINDER (quit otherwise) [y/N]:" DIR_OKAY
+read -p "Is it okay to make required sub-directories in $DATA_DIR and $APP (quit otherwise) [y/N]:" DIR_OKAY
 
 if [ "$DIR_OKAY" == 'y' ]; then
-    mkdir -p $CINDER_DIR/webapps
-    mkdir -p $CINDER_DIR/plugins
-    mkdir -p $CINDER_DIR/auth
-    mkdir -p $CINDER_DIR/logs/xnat
-    mkdir -p $CINDER_DIR/logs/tomcat
-    mkdir -p $CINDER_DIR/pipeline
-    mkdir -p $CINDER_DIR/build
+    mkdir -p $APP_DIR/webapps
+    mkdir -p $APP_DIR/plugins
+    mkdir -p $APP_DIR/auth
+    mkdir -p $APP_DIR/logs/xnat
+    mkdir -p $APP_DIR/logs/tomcat
+    mkdir -p $APP_DIR/pipeline
+    mkdir -p $APP_DIR/build
     mkdir -p $DATA_DIR/archive
     mkdir -p $DATA_DIR/prearchive
     mkdir -p $DATA_DIR/cache
@@ -69,18 +81,6 @@ else
     echo "Terminating configuration of XNAT docker compose"
     exit
 fi
-
-
-echo "---"
-echo "Writing configuration variables to $(pwd)/.env"
-echo "---"
-echo "\
-SITE=$SITE
-DATA_DIR=$DATA_DIR
-CINDER_DIR=$CINDER_DIR
-TIMEZONE=$TIMEZONE
-LOCALE=$LOCALE" | tee .env.copy
-echo "---"
 
 # Return to original directory
 popd;

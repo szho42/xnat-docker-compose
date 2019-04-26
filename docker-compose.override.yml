@@ -7,13 +7,13 @@ services:
           - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
     xnat-web:
        volumes:
-          - $CINDER_DIR/webapps:/opt/tomcat/webapps
-          - $CINDER_DIR/plugins:/data/xnat/home/plugins
-          - $CINDER_DIR/auth:/data/xnat/home/auth
-          - $CINDER_DIR/logs/xnat:/data/xnat/home/logs
-          - $CINDER_DIR/logs/tomcat:/opt/tomcat/logs
-          - $CINDER_DIR/pipeline:/data/xnat/pipeline
-          - $CINDER_DIR/build:/data/xnat/build
+          - $APP_DIR/webapps:/opt/tomcat/webapps
+          - $APP_DIR/plugins:/data/xnat/home/plugins
+          - $APP_DIR/auth:/data/xnat/home/auth
+          - $APP_DIR/logs/xnat:/data/xnat/home/logs
+          - $APP_DIR/logs/tomcat:/opt/tomcat/logs
+          - $APP_DIR/pipeline:/data/xnat/pipeline
+          - $APP_DIR/build:/data/xnat/build
           - $DATA_DIR/archive:/data/xnat/archive
           - $DATA_DIR/prearchive:/data/xnat/prearchive
           - $DATA_DIR/cache:/data/xnat/cache
@@ -23,4 +23,4 @@ services:
           - $BACKUP_DIR:/backups
     xnat-db:
        volumes:
-          - $CINDER_DIR/postgres:/var/lib/postgresql/data
+          - $APP_DIR/postgres:/var/lib/postgresql/data
