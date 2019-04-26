@@ -22,7 +22,7 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 1. Clone the [xnat-docker-compose](https://github.com/MonashBI/xnat-docker-compose) repository.
 
 ```
-$ git clone https://github.com/NrgXnat/xnat-docker-compose
+$ git clone https://github.com/MonashBI/xnat-docker-compose
 $ cd xnat-docker-compose
 ```
 
