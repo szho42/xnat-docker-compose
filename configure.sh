@@ -68,7 +68,7 @@ read -p "Is it okay to make required sub-directories in $DATA_DIR and $APP (quit
 if [ "$DIR_OKAY" == 'y' ]; then
     mkdir -p $APP_DIR/webapps
     mkdir -p $APP_DIR/plugins
-    mkdir -p $APP_DIR/auth
+    mkdir -p $APP_DIR/config/auth
     mkdir -p $APP_DIR/logs/xnat
     mkdir -p $APP_DIR/logs/tomcat
     mkdir -p $APP_DIR/pipeline

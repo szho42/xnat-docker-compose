@@ -13,7 +13,6 @@ services:
        - ./plugins:/data/xnat/home/plugins
        - /var/run/docker.sock:/var/run/docker.sock
        - ./tomcat/server.xml:/opt/tomcat/conf/server.xml
-       - ./tomcat/setenv.sh:/opt/tomcat/bin/setenv.sh
        - ./tomcat/tomcat-users.xml:/opt/tomcat/conf/tomcat-users.xml
        - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
      expose:
@@ -21,7 +20,7 @@ services:
      depends_on:
        - xnat-db
      environment:
-       - CATALINA_OPTS=-Xms128m -Xmx1024m -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+       - JAVA_OPTS=-Xms4g -Xmx8g -XX:MaxPermSize=512m -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
        - XNAT_HOME=/data/xnat/home
        - TZ=$TIMEZONE
   xnat-db:
@@ -30,6 +29,7 @@ services:
        - "5432"
      volumes:
        - ./postgres-data:/var/lib/postgresql/data
+       - /home/ubuntu/downloads/mbi-xnat.sql:/db-snapshot
      environment:
        - TZ=$TIMEZONE
   xnat-backup:

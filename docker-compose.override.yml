@@ -9,7 +9,7 @@ services:
        volumes:
           - $APP_DIR/webapps:/opt/tomcat/webapps
           - $APP_DIR/plugins:/data/xnat/home/plugins
-          - $APP_DIR/auth:/data/xnat/home/auth
+          - $APP_DIR/config:/data/xnat/home/config
           - $APP_DIR/logs/xnat:/data/xnat/home/logs
           - $APP_DIR/logs/tomcat:/opt/tomcat/logs
           - $APP_DIR/pipeline:/data/xnat/pipeline
