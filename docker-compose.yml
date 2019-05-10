@@ -20,7 +20,7 @@ services:
      depends_on:
        - xnat-db
      environment:
-       - JAVA_OPTS=-Xms24g -Xmx32g -XX:MaxPermSize=4g -XX:-UseGCOverheadLimit -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+       - JAVA_OPTS=-Xms24g -Xmx32g -XX:MaxPermSize=4g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
        - XNAT_HOME=/data/xnat/home
        - TZ=$TIMEZONE
   xnat-db:
