@@ -4,9 +4,11 @@ MAINTAINER Manish Kumar <rishimanish123@gmail.com>
 
 ARG LOCALE
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get -qq update && \
     apt-get -q -y upgrade && \
-    apt-get install -y sudo curl wget locales vim
+    apt-get install -y sudo curl wget locales vim tzdata
 
 # Set locales
 RUN locale-gen $LOCALE.UTF-8
