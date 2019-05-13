@@ -11,10 +11,15 @@ services:
      volumes:
        - ./webapps:/opt/tomcat/webapps
        - ./plugins:/data/xnat/home/plugins
-       - /var/run/docker.sock:/var/run/docker.sock
+       - ./logs/xnat:/data/xnat/home/logs
+       - ./logs/tomcat:/opt/tomcat/logs
        - ./tomcat/server.xml:/opt/tomcat/conf/server.xml
        - ./tomcat/tomcat-users.xml:/opt/tomcat/conf/tomcat-users.xml
        - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
+       # Authentication providers
+       - ./auth:/data/xnat/home/config/auth
+       # Pass docker socket for XNAT container service
+       - /var/run/docker.sock:/var/run/docker.sock
      expose:
        - "8080"
      depends_on:

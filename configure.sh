@@ -63,7 +63,7 @@ echo "Making required data and app directories"
 echo "---"
 
 # Make all required sub-directories if they aren't present
-read -p "Is it okay to make required sub-directories in $DATA_DIR and $APP (quit otherwise) [y/N]:" DIR_OKAY
+read -p "Is it okay to make required sub-directories in $DATA_DIR and $APP_DIR (quit otherwise) [y/N]:" DIR_OKAY
 
 if [ "$DIR_OKAY" == 'y' ]; then
     mkdir -p $APP_DIR/webapps
@@ -73,10 +73,10 @@ if [ "$DIR_OKAY" == 'y' ]; then
     mkdir -p $APP_DIR/logs/tomcat
     mkdir -p $APP_DIR/pipeline
     mkdir -p $APP_DIR/build
+    mkdir -p $APP_DIR/cache
+    mkdir -p $APP_DIR/ftp
     mkdir -p $DATA_DIR/archive
     mkdir -p $DATA_DIR/prearchive
-    mkdir -p $DATA_DIR/cache
-    mkdir -p $DATA_DIR/ftp
 else
     echo "Terminating configuration of XNAT docker compose"
     exit

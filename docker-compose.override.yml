@@ -2,22 +2,17 @@ version: '3'
 services:
     xnat-nginx:
        volumes:
-          - ./nginx/certs/cert.crt:/etc/nginx/certs/cert.crt
-          - ./nginx/certs/key.key:/etc/nginx/certs/key.key
+          - ./certs/cert.crt:/etc/nginx/certs/cert.crt
+          - ./certs/key.key:/etc/nginx/certs/key.key
           - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
     xnat-web:
        volumes:
-          - $APP_DIR/webapps:/opt/tomcat/webapps
-          - $APP_DIR/plugins:/data/xnat/home/plugins
-          - $APP_DIR/config:/data/xnat/home/config
-          - $APP_DIR/logs/xnat:/data/xnat/home/logs
-          - $APP_DIR/logs/tomcat:/opt/tomcat/logs
+          - $DATA_DIR/archive:/data/xnat/archive
+          - /mnt/cache/prearchive:/data/xnat/prearchive
           - $APP_DIR/pipeline:/data/xnat/pipeline
           - $APP_DIR/build:/data/xnat/build
-          - $DATA_DIR/archive:/data/xnat/archive
-          - $DATA_DIR/prearchive:/data/xnat/prearchive
-          - $DATA_DIR/cache:/data/xnat/cache
-          - $DATA_DIR/ftp:/data/xnat/ftp
+          - $APP_DIR/cache:/data/xnat/cache
+          - $APP_DIR/ftp:/data/xnat/ftp
     xnat-backup:
        volumes:
           - $BACKUP_DIR:/backups
