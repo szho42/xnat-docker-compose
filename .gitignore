@@ -6,7 +6,7 @@
 /.project
 /.settings
 /WebContent
-nginx/certs
-cinder
+/certs
 data
 *.swp
+/logs
