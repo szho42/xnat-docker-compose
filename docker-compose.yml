@@ -9,15 +9,13 @@ services:
        - "8081:8080"
        - "8104:8104"
      volumes:
-       - ./webapps:/opt/tomcat/webapps
+       - ./webapps:/usr/local/tomcat/webapps
        - ./plugins:/data/xnat/home/plugins
        - ./logs/xnat:/data/xnat/home/logs
        - ./logs/tomcat:/opt/tomcat/logs
        - ./tomcat/server.xml:/opt/tomcat/conf/server.xml
        - ./tomcat/tomcat-users.xml:/opt/tomcat/conf/tomcat-users.xml
        - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
-       # Authentication providers
-       - ./auth:/data/xnat/home/config/auth
        # Pass docker socket for XNAT container service
        - /var/run/docker.sock:/var/run/docker.sock
      expose:
@@ -34,7 +32,6 @@ services:
        - "5432"
      volumes:
        - ./postgres-data:/var/lib/postgresql/data
-       - /home/ubuntu/downloads/mbi-xnat.sql:/db-snapshot
      environment:
        - TZ=$TIMEZONE
   xnat-backup:

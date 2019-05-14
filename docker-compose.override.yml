@@ -13,6 +13,8 @@ services:
           - $APP_DIR/build:/data/xnat/build
           - $APP_DIR/cache:/data/xnat/cache
           - $APP_DIR/ftp:/data/xnat/ftp
+          # Authentication providers
+          - ./auth:/data/xnat/home/config/auth
     xnat-backup:
        volumes:
           - $BACKUP_DIR:/backups
