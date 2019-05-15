@@ -1,75 +1,42 @@
-FROM manishkumr/ubuntu_jdk7_image
+FROM tomcat:7-jre8-alpine
 
-MAINTAINER Manish Kumar <rishimanish123@gmail.com>
+MAINTAINER Tom Close <tom.g.close@gmail.com>
 
 ARG LOCALE
 
-RUN apt-get -qq update && \
-    apt-get -q -y upgrade && \
-    apt-get install -y sudo curl wget locales
+RUN apk add --no-cache postgresql-client vim tzdata ca-certificates wget 
 
-# Set locales
-RUN locale-gen $LOCALE.UTF-8
+# Install language pack
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-bin-2.25-r0.apk && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-i18n-2.25-r0.apk && \
+    apk add glibc-bin-2.25-r0.apk glibc-i18n-2.25-r0.apk glibc-2.25-r0.apk
+
+# Iterate through all locale and install it
+# Note that locale -a is not available in alpine linux, use `/usr/glibc-compat/bin/locale -a` instead
+COPY ./locale.md /locale.md
+RUN cat /locale.md | xargs -i /usr/glibc-compat/bin/localedef -i {} -f UTF-8 {}.UTF-8
+
+# Set locales, NOT SUPPORTED by Alpine
 ENV LANG $LOCALE.UTF-8
 ENV LANGUAGE $LOCALE.UTF-8
 ENV LC_ALL $LOCALE.UTF-8
 
-# Fix sh
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-ENV TOMCAT_MAJOR 7
-ENV TOMCAT_VERSION 7.0.85
-# Get Tomcat
-ENV TOMCAT_TGZ_URLS \
-    https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
-    # if the version is outdated, we might have to pull from the dist/archive :/
-    https://www-us.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
-    https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz \
-    https://archive.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
-
-RUN set -eux; \
-        \
-        success=; \
-        for url in $TOMCAT_TGZ_URLS; do \
-                if wget -O /tmp/tomcat.tgz "$url"; then \
-                        success=1; \
-                        break; \
-                fi; \
-        done; \
-        [ -n "$success" ]; \
-        tar xzvf /tmp/tomcat.tgz -C /opt && \
-        mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat && \
-        rm /tmp/tomcat.tgz && \
-        rm -rf /opt/tomcat/webapps/*
-
-# Add admin/admin user
-ADD tomcat-users.xml /opt/tomcat/conf/
-# add server.xml
-ADD server.xml /opt/tomcat/conf/
-# Add xnat.home to config
-ADD setenv.sh /opt/tomcat/bin
-ENV CATALINA_HOME /opt/tomcat
-ENV PATH $PATH:$CATALINA_HOME/bin
-
-RUN adduser --disabled-password --gecos '' xnat
-
+# Make directories required for XNAT
 RUN mkdir -p /data/xnat/home/config
-
-WORKDIR /data/xnat/home
-
-RUN mkdir logs plugins work
-
-WORKDIR /data/xnat
-
-RUN mkdir archive build cache ftp pipeline prearchive
-
-ADD xnat-conf.properties /data/xnat/home/config
+RUN mkdir -p /data/xnat/home/work
+RUN mkdir -p /data/xnat/archive
+RUN mkdir -p /data/xnat/prearchive
+RUN mkdir -p /data/xnat/build
+RUN mkdir -p /data/xnat/cache
+RUN mkdir -p /data/xnat/ftp
+RUN mkdir -p /data/xnat/pipeline
 
 EXPOSE 8080
 EXPOSE 8009
-VOLUME "/opt/tomcat/webapps"
-ADD setenv.sh /opt/tomcat/bin
-WORKDIR /opt/tomcat
+RUN rm -rf $CATALINA_HOME/webapps
+VOLUME "$CATALINA_HOME/webapps"
 
 # Launch Tomcat
-CMD ["/opt/tomcat/bin/catalina.sh", "run"]
+CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]

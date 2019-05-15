@@ -22,7 +22,7 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 1. Clone the [xnat-docker-compose](https://github.com/MonashBI/xnat-docker-compose) repository.
 
 ```
-$ git clone https://github.com/NrgXnat/xnat-docker-compose
+$ git clone https://github.com/MonashBI/xnat-docker-compose
 $ cd xnat-docker-compose
 ```
 
@@ -30,7 +30,8 @@ $ cd xnat-docker-compose
 
     - **docker-compose.yml**: How the different containers are deployed.
     - **postgres/XNAT.sql**: Database configuration. Mainly used to customize the database user or password. See [Configuring PostgreSQL for XNAT](https://wiki.xnat.org/documentation/getting-started-with-xnat-1-7/installing-xnat-1-7/configuring-postgresql-for-xnat).
-    - **tomcat/Dockerfile**: Builds the tomcat image, into which the XNAT war will be deployed.
+    - **tomcat/server.xml**: Configures the Tomcat server that runs the XNAT web application
+    - **tomcat/xnat-conf.properties**: Configures the XNAT web application, primarily to connect to the Postgres DB
     - **tomcat/setenv.sh**: Tomcat's launch arguments, set through the `JAVA_OPTS` environment variable.
     - **tomcat/tomcat-users.xml**: [Tomcat manager](https://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html) settings. It is highly recommended to change the login from "admin" with password "admin" to the server if it is going live.
     - **tomcat/xnat-conf.properties**: XNAT database configuration properties. There is a default version
@@ -39,7 +40,7 @@ $ cd xnat-docker-compose
 
 3. Download [latest XNAT WAR](https://download.xnat.org)
 
-Download the latest xnat tomcat war file and place it in a webapps directory that you must create.
+Download the latest xnat tomcat WAR file and place it in a webapps directory that you must create. The name that the war is saved as will be the path to the XNAT web-app relative to the domain name (e.g. my-xnat.com/xnat). If you want the web-app to be accessible from the root of the domain, name the WAR file ROOT.war.
 
 ```
 $ mkdir webapps
@@ -96,17 +97,37 @@ docker-compose down
 ```
 Change working directory to `xnat-docker-compose/nginx/`
 
+### Install your certificates
 Create a directory named as `certs`
 ```
 mkdir certs
 ```
-Copy SSL certificate file(with root and intermediate certificates as one file) to this directory and name it as `cert.crt` and copy key file to this directory and name it as `key.key`
+Copy SSL certificate file to this directory and name it as `cert.crt` and copy key file to this directory and name it as `key.key`. The cert.crt file should also contain any intermediate and root certificates. Root and intermediate certs are combined in plain text by simply copying and pasting in the intermediate and then root certs on subsequent lines.
 
+### Edit nginx-ssl.conf
+
+Edit the nginx-ssl.conf file and replace any occurances of "change.me" with the domain name of the
+server.
 
 Start the system
 ```
 docker-compose up -d 
 
+```
+
+## Setup postgres backup
+Postgres backups are scheduled to run at 0300 hrs everyday but can be configures by modifying `SETUP_CRON` environment under `xnat-backup` service.
+```
+xnat-backup:
+     ...
+     environment:
+       SETUP_CRON: "0 3 * * *"
+```
+The `xnat-backup` service is configured to create nighly backups under `backups` directory, but can be configured by overriding this value in `docker-compose.override.yml` file.
+```
+xnat-backup:
+       volumes:
+          - $BACKUP_DIR:/backups
 ```
 
 ## Troubleshooting

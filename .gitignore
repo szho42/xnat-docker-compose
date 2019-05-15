@@ -6,3 +6,8 @@
 /.project
 /.settings
 /WebContent
+/certs
+/auth
+data
+*.swp
+/logs
