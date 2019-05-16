@@ -6,6 +6,7 @@
 /.project
 /.settings
 /WebContent
+/.env
 /certs
 /auth
 data
