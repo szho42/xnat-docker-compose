@@ -65,22 +65,22 @@ echo "---"
 # Make all required sub-directories if they aren't present
 read -p "Is it okay to make required sub-directories in $DATA_DIR and $APP_DIR (quit otherwise) [y/N]:" DIR_OKAY
 
-# if [ "$DIR_OKAY" == 'y' ]; then
-#     mkdir -p $APP_DIR/webapps
-#     mkdir -p $APP_DIR/plugins
-#     mkdir -p $APP_DIR/config/auth
-#     mkdir -p $APP_DIR/logs/xnat
-#     mkdir -p $APP_DIR/logs/tomcat
-#     mkdir -p $APP_DIR/pipeline
-#     mkdir -p $APP_DIR/build
-#     mkdir -p $APP_DIR/cache
-#     mkdir -p $APP_DIR/ftp
-#     mkdir -p $DATA_DIR/archive
-#     mkdir -p $DATA_DIR/prearchive
-# else
-#     echo "Terminating configuration of XNAT docker compose"
-#     exit
-# fi
+if [ "$DIR_OKAY" == 'y' ]; then
+    mkdir -p ./webapps
+    mkdir -p ./plugins
+    mkdir -p ./config/auth
+    mkdir -p ./logs/xnat
+    mkdir -p ./logs/tomcat
+    mkdir -p $APP_DIR/pipeline
+    mkdir -p $APP_DIR/build
+    mkdir -p $APP_DIR/cache
+    mkdir -p $APP_DIR/ftp
+    mkdir -p $APP_DIR/prearchive
+    mkdir -p $DATA_DIR/archive
+else
+    echo "Terminating configuration of XNAT docker compose"
+    exit
+fi
 
 # Return to original directory
 popd;
