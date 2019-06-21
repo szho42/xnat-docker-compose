@@ -12,3 +12,5 @@
 data
 *.swp
 /logs
+nginx/nginx-ssl.conf
+downloads
