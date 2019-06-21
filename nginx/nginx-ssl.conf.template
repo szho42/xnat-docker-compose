@@ -42,7 +42,7 @@ http {
 server {
   listen 80 default_server;
   listen [::]:80 default_server;
-  server_name mbi-xnat.erc.monash.edu.au;
+  server_name SITE;
   return 301 https://$server_name$request_uri;
 }
 
@@ -50,7 +50,7 @@ server {
 # see https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/
 # to see why we hardwire the IP address
     listen 443 ssl;  
-    server_name mbi-xnat.erc.monash.edu.au;
+    server_name SITE;
     ssl on;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
