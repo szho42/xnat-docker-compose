@@ -26,7 +26,22 @@ $ git clone https://github.com/MonashBI/xnat-docker-compose
 $ cd xnat-docker-compose
 ```
 
-2. Configurations: The default configuration is sufficient to run the deployment. The following files can be modified if you want to change the default configuration
+2. Run the configuration script and enter the required information when prompted
+
+```
+$ ./configure.sh
+```
+
+If you need to change any of this information after the fact you can edit the `.env` (symlinked to `config`)
+file it creates.
+
+Note, this script will ask for the paths to directories in which to store images, XNAT's SQL database and backups,
+along with a domain name to use for the server. If you don't have a domain name and SSL cert provided already
+it is possible to bring up a test instance without them but it is highly recommended to use SSL in production.
+
+3. Customisation
+
+Configurations: The default configuration is sufficient to run the deployment. The following files can be modified if you want to change the default configuration
 
     - **docker-compose.yml**: How the different containers are deployed.
     - **postgres/XNAT.sql**: Database configuration. Mainly used to customize the database user or password. See [Configuring PostgreSQL for XNAT](https://wiki.xnat.org/documentation/getting-started-with-xnat-1-7/installing-xnat-1-7/configuring-postgresql-for-xnat).
@@ -40,24 +55,22 @@ $ cd xnat-docker-compose
 
 3. Download [latest XNAT WAR](https://download.xnat.org)
 
-Download the latest xnat tomcat WAR file and place it in a webapps directory that you must create. The name that the war is saved as will be the path to the XNAT web-app relative to the domain name (e.g. my-xnat.com/xnat). If you want the web-app to be accessible from the root of the domain, name the WAR file ROOT.war.
+Download the latest xnat tomcat WAR file and place it in a webapps directory that you must create. The name that the war is saved as will be the path to the XNAT web-app relative to the domain name (e.g. my-xnat.com/xnat). If you want the web-app to be accessible from the root of the domain, name the WAR file ROOT.war, e.g.
 
 ```
-$ mkdir webapps
-$ wget --quiet --no-cookies https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-1.7.4.1.war -O webapps/xnat.war
+$ wget --no-cookies https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-1.7.5.3.war -O webapps/ROOT.war
 ```
 
-4. Start the system
+4. Test the system
 
-Run docker compose "up" command in detached mode ('-d'). On systems with sudo (e.g Linux), you will need to run docker-compose as sudo.
+Run docker compose "up" command in detached mode ('-d'). NB: On systems with sudo (e.g Linux), you will need to run docker-compose as sudo.
 
 ```
 $ cd xnat-docker-compose
-$ docker-compose up -d
+$ docker-compose -f docker-compose.yml up -d
 ```
 
-
-Note that at this point, if you go to `localhost/xnat` you won't see a working web application. It takes upwards of a minute
+Note that at this point, if you go to `http://<your-domain-name>` you won't see a working web application. It takes upwards of a minute
 to initialize the database, and you can follow progress by reading the docker compose log of the server:
 
 ```
@@ -87,10 +100,8 @@ xnat-web_1    | INFO: Server startup in 84925 ms
 
 Your XNAT will soon be available at http://localhost/xnat.
 
-## Installing plugins and pipeline
-Run add-plugins.sh script
+5. Install SSL certificates for NginX
 
-## Setting up SSL certificates for NginX
 Bring down instance if already running
 ```
 docker-compose down
