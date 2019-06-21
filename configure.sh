@@ -133,7 +133,6 @@ echo "---"
 echo "Making required data and app directories"
 echo "---"
 
-# Make all required sub-directories if they aren't present
 
 mkdir -p $DATA_DIR/archive
 mkdir -p $APP_DIR/pipeline
