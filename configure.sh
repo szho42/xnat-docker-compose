@@ -20,19 +20,27 @@ else
     echo "No existing configuration found at '$(pwd)/.env'"
 fi
 
+echo ""
 echo "-----------------------------------------------"
 echo " Configuring logs to be written at $(pwd)/logs"
 echo "-----------------------------------------------"
 
 mkdir -p ./logs/tomcat
-mkdir -p .logs/xnat
+mkdir -p ./logs/xnat
+mkdir -p ./auth
 
+echo ""
 echo "---------------------------"
 echo " Downloading XNAT WAR file"
 echo "---------------------------"
 
+mkdir -p ./webapps
+
 if [ -z "$XNAT_VER" ]; then
     read -p 'Please enter version of XNAT to download and install [1.7.5.3] (XNAT_VER):' XNAT_VER
+    if [ -z "$XNAT_VER" ]; then
+        XNAT_VER=1.7.5.3
+    fi
 else
     echo "Loaded saved value for XNAT_VER=$XNAT_VER"
 fi
@@ -41,7 +49,7 @@ fi
 mkdir -p downloads
 WEBAPP_DOWNLOAD=./downloads/$XNAT_VER.war
 
-if [ ! -f $WEBAPP_DOWNLOAD ]; then
+if [ ! -f "$WEBAPP_DOWNLOAD" ]; then
     wget https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-${XNAT_VER}.war 
     mv xnat-web-${XNAT_VER}.war $WEBAPP_DOWNLOAD
 else
@@ -56,6 +64,7 @@ cp $WEBAPP_DOWNLOAD ./webapps/ROOT.war
 echo "Moved v$XNAT_VER WAR file to '$(pwd)/webapps/ROOT.war', to upgrade to a later version of XNAT simply replace it with a new WAR file"
 echo "NB: Configuration can be terminated at this stage if you only require a demo XNAT instance (i.e. one brought up by running 'docker-compose -f docker-compose.yml up -d')"
 
+echo ""
 echo "----------------------------"
 echo " Downloading useful plugins"
 echo "----------------------------"
@@ -67,30 +76,31 @@ LDAP_AUTH_PLUGIN_VER=1.0.0
 SIMPLE_UPLOAD_PLUGIN_VER=2.04
 
 # Container service plugin
-if [ ! ./plugins/container-service-plugin.jar ]; then
+if [ ! -f ./plugins/container-service-plugin.jar ]; then
     echo "Downloading container service plugin"
     pushd downloads
-    wget https://github.com/NrgXnat/container-service/releases/download/$CONTAINER_SERVICE_VER/containers-$CONTAINER_SERVICE_VER-fat.jar
+    wget https://github.com/NrgXnat/container-service/releases/download/$CONTAINER_SERVICE_PLUGIN_VER/containers-$CONTAINER_SERVICE_PLUGIN_VER-fat.jar
     popd
-    mv ./downloads/containers-$CONTAINER_SERVICE_VER-fat.jar ./plugins/container-service-plugin.jar
+    mv ./downloads/containers-$CONTAINER_SERVICE_PLUGIN_VER-fat.jar ./plugins/container-service-plugin.jar
 fi
 
 
 # LDAP auth plugin
-if [ ! ./plugins/ldap-auth-plugin.jar ]; then
+if [ ! -f ./plugins/ldap-auth-plugin.jar ]; then
     echo "Downloading container service plugin"
     pushd downloads
-    wget https://bitbucket.org/xnatx/ldap-auth-plugin/downloads/xnat-ldap-auth-plugin-1.0.0.jar
+    wget https://bitbucket.org/xnatx/ldap-auth-plugin/downloads/xnat-ldap-auth-plugin-$LDAP_AUTH_PLUGIN_VER.jar
     popd
     mv ./downloads/xnat-ldap-auth-plugin-$LDAP_AUTH_PLUGIN_VER.jar ./plugins/ldap-auth-plugin.jar
 fi
 
 
 # Non-DICOM uploaded plugin
-if [ ! ./plugins/simple-upload-plugin.jar ]; then
+if [ ! -f ./plugins/simple-upload-plugin.jar ]; then
     echo "Downloading simple upload plugin (for non-DICOM uploads)"
     pushd downloads
-    https://github.com/MonashBI/xnat-simple-upload-plugin/releases/download/feature_release$SIMPLE_UPLOAD_PLUGIN_VER/xnat-simple-upload-plugin-2.0.0.jar
+    # Need to fix up the version number of the plugin that is uploaded in the release
+    wget https://github.com/MonashBI/xnat-simple-upload-plugin/releases/download/feature_release$SIMPLE_UPLOAD_PLUGIN_VER/xnat-simple-upload-plugin-2.0.0.jar
     popd
     mv ./downloads/xnat-simple-upload-plugin-2.0.0.jar ./plugins/simple-upload-plugin.jar
 fi
@@ -100,6 +110,7 @@ docker pull manishkumr/xnat-qc-pipeline
 
 echo "Downloaded plugins for the XNAT container service, simple file uploads, and LDAP authentication providers"
 
+echo ""
 echo "-------------------------"
 echo " Configuration variables"
 echo "-------------------------"
@@ -114,37 +125,52 @@ fi
 sed "s/server_name SITE/server_name $SITE/g" ./nginx/nginx-ssl.conf.template > ./nginx/nginx-ssl.conf
 
 if [ -z "$DATA_DIR" ]; then
-    read -p 'Please enter location for primary data directory, i.e. SHOULD BE BACKED UP!! (DATA_DIR):' DATA_DIR
+    read -p 'Please enter location for primary data directory, i.e. SHOULD BE BACKED UP!! (DATA_DIR): ' DATA_DIR
 else
     echo "Loaded saved value for DATA_DIR=$DATA_DIR"
 fi
 
+if [ ! -d $DATA_DIR ]; then
+    echo "Error DATA_DIR doesn't exist!"
+    exit
+fi
+
 if [ -z "$APP_DIR" ]; then
-    read -p 'Please enter location of "cache" directory in which to store pre-archive, plugins, caches and logs, i.e. should be large enough to hold a number of large imaging sessions and be persistent (APP_DIR) :' APP_DIR
+    read -p 'Please enter location of "cache" directory in which to store pre-archive, plugins, caches and logs, i.e. should be large enough to hold a number of large imaging sessions and be persistent (APP_DIR): ' APP_DIR
 else
     echo "Loaded saved value for APP_DIR=$APP_DIR"
 fi
 
+if [ ! -d $APP_DIR ]; then
+    echo "Error APP_DIR doesn't exist!"
+    exit
+fi
+
 if [ -z "$DB_BACKUP_DIR" ]; then
-    read -p "Please enter location for backups of XNAT's postgres DB (DB_BACKUP_DIR) :" DB_BACKUP_DIR
+    read -p "Please enter location for backups of XNAT's postgres DB (DB_BACKUP_DIR): " DB_BACKUP_DIR
 else
     echo "Loaded saved value for DB_BACKUP_DIR=$DB_BACKUP_DIR"
 fi
 
+if [ ! -d $DB_BACKUP_DIR ]; then
+    echo "Error DB_BACKUP_DIR doesn't exist!"
+    exit
+fi
+
 if [ -z "$TIMEZONE" ]; then
-    read -p 'Please enter time-zone for server, e.g. Australia/Melbourne (TIMEZONE):' TIMEZONE
+    read -p 'Please enter time-zone for server, e.g. Australia/Melbourne (TIMEZONE): ' TIMEZONE
 else
     echo "Loaded saved value for TIMEZONE=$TIMEZONE"
 fi
 
 if [ -z "$LOCALE" ]; then
-    read -p 'Please enter locale for server, e.g. en_AU (LOCALE):' LOCALE
+    read -p 'Please enter locale for server, e.g. en_AU (LOCALE): ' LOCALE
 else
     echo "Loaded saved value for LOCALE=$LOCALE"
 fi
 
 if [ -z "$JVM_MEMGB" ]; then
-    read -p 'Please enter amount of memory to allocate to the Java virtual machine that runs the XNAT application, typically most of the available memory leaving a 3-4 GB for the other containers and general purpose (JVM_MEMGB):' JVM_MEMGB
+    read -p 'Please enter amount of memory to allocate to the Java virtual machine that runs the XNAT application, typically most of the available memory leaving a 3-4 GB for the other containers and general purpose (JVM_MEMGB): ' JVM_MEMGB
 else
     echo "Loaded saved value for JVM_MEMGB=$JVM_MEMGB"
 fi
@@ -159,9 +185,7 @@ else
     echo "Loaded saved value for JVM_MEMGB_INIT=$JVM_MEMGB_INIT"
 fi
 
-echo "------------------------------------------------"
-echo " Writing configuration variables to $(pwd)/.env"
-echo "------------------------------------------------"
+echo "Recording the following configuration:"
 echo "\
 SITE=$SITE
 DATA_DIR=$DATA_DIR
@@ -172,11 +196,6 @@ JVM_MEMGB=$JVM_MEMGB
 JVM_MEMGB_INIT=$JVM_MEMGB_INIT
 TIMEZONE=$TIMEZONE
 LOCALE=$LOCALE" | tee .env
-echo "------------------------------------------------"
-
-echo "------------------------------------------"
-echo " Making required data and app directories"
-echo "------------------------------------------"
 
 mkdir -p $DATA_DIR/archive
 mkdir -p $APP_DIR/pipeline
@@ -186,9 +205,15 @@ mkdir -p $APP_DIR/cache
 mkdir -p $APP_DIR/ftp
 mkdir -p $APP_DIR/postgres
 
+echo ""
+echo "Wrote configuration variables to $(pwd)/.env and made required sub-directories in $DATA_DIR and $APP_DIR"
+
+echo ""
 echo "-----------------------"
 echo " Configuring SSL certs"
 echo "-----------------------"
+
+mkdir -p ./certs
 
 if [ ! -f ./certs/key.key ]; then
     read -p 'Please enter path to SSL key (leave empty to generate + CSR): ' KEY_PATH
