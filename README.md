@@ -124,7 +124,7 @@ to use an external provider to authenticate your users for security (and so you 
 XNAT supports authentication by external providers via LDAP (e.g. university-wide authentication) and OpenID Connect (e.g. Australian Access Federation
 and Google). In order to get this to work you will need to register your service with the authentication provider, which typically involves them
 assessing your instance and checking that is suitable (i.e. uses SSL). So you will need to have your instance up and running with SSL first before
-you can configure external authentication providers, once you have run
+you can configure external authentication providers. Once you have, run
 
 ```
 ./configure-auth.sh
