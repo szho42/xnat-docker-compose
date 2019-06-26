@@ -1,23 +1,23 @@
 version: '3'
 services:
-    xnat-nginx:
-       volumes:
-          - ./certs/cert.crt:/etc/nginx/certs/cert.crt
-          - ./certs/key.key:/etc/nginx/certs/key.key
-          - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
-    xnat-web:
-       volumes:
-          - $DATA_DIR/archive:/data/xnat/archive
-          - /mnt/cache/prearchive:/data/xnat/prearchive
-          - $APP_DIR/pipeline:/data/xnat/pipeline
-          - $APP_DIR/build:/data/xnat/build
-          - $APP_DIR/cache:/data/xnat/cache
-          - $APP_DIR/ftp:/data/xnat/ftp
-          # Authentication providers
-          - ./auth:/data/xnat/home/config/auth
-    xnat-backup:
-       volumes:
-          - $DB_BACKUP_DIR:/backups
-    xnat-db:
-       volumes:
-          - $APP_DIR/postgres:/var/lib/postgresql/data
+  xnat-nginx:
+    volumes:
+      - ./certs/cert.crt:/etc/nginx/certs/cert.crt
+      - ./certs/key.key:/etc/nginx/certs/key.key
+      - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
+  xnat-web:
+    volumes:
+      # Directory where image data is stored
+      - $DATA_DIR/archive:/data/xnat/archive
+      # Working and temporary store directories
+      - $APP_DIR/prearchive:/data/xnat/prearchive
+      - $APP_DIR/pipeline:/data/xnat/pipeline
+      - $APP_DIR/build:/data/xnat/build
+      - $APP_DIR/cache:/data/xnat/cache
+      - $APP_DIR/ftp:/data/xnat/ftp
+  xnat-backup:
+    volumes:
+      - $DB_BACKUP_DIR:/backups
+  xnat-db:
+    volumes:
+      - $APP_DIR/postgres:/var/lib/postgresql/data

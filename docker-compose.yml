@@ -1,82 +1,88 @@
 version: '3'
 services:
   xnat-web:
-     build:
-       context: ./tomcat
-       args:
-         LOCALE: $LOCALE
-     ports:
-       - "8081:8080"
-       - "8104:8104"
-     volumes:
-       - ./webapps:/usr/local/tomcat/webapps
-       - ./plugins:/data/xnat/home/plugins
-       - ./logs/xnat:/data/xnat/home/logs
-       - ./logs/tomcat:/opt/tomcat/logs
-       - ./tomcat/server.xml:/opt/tomcat/conf/server.xml
-       - ./tomcat/tomcat-users.xml:/opt/tomcat/conf/tomcat-users.xml
-       - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
-       # Pass docker socket for XNAT container service
-       - /var/run/docker.sock:/var/run/docker.sock
-     expose:
-       - "8080"
-     depends_on:
-       - xnat-db
-     environment:
-       - JAVA_OPTS=-Xms16g -Xmx40g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
-       - XNAT_HOME=/data/xnat/home
-       - TZ=$TIMEZONE
+    build:
+      context: ./tomcat
+      args:
+        LOCALE: $LOCALE
+    ports:
+      - "8081:8080"
+      - "8104:8104"
+    volumes:
+      # The webapps directory to hold the WAR
+      - ./webapps:/usr/local/tomcat/webapps
+      # The plugins directory to add new plugins
+      - ./plugins:/data/xnat/home/plugins
+      # Mount the logs outside the container for easy access
+      - ./logs/xnat:/data/xnat/home/logs
+      - ./logs/tomcat:/opt/tomcat/logs
+      # Configuration files
+      - ./tomcat/server.xml:/opt/tomcat/conf/server.xml
+      - ./tomcat/tomcat-users.xml:/opt/tomcat/conf/tomcat-users.xml
+      - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
+      # Pass docker socket for XNAT container service
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Authentication providers
+      - ./auth:/data/xnat/home/config/auth
+    expose:
+      - "8080"
+    depends_on:
+      - xnat-db
+    environment:
+      - JAVA_OPTS=-Xms16g -Xmx40g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+      - XNAT_HOME=/data/xnat/home
+      - TZ=$TIMEZONE
   xnat-db:
-     build: ./postgres
-     expose:
-       - "5432"
-     volumes:
-       - ./postgres-data:/var/lib/postgresql/data
-     environment:
-       - TZ=$TIMEZONE
+    build: ./postgres
+    expose:
+      - "5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - TZ=$TIMEZONE
   xnat-backup:
-     build: ./backup
-     depends_on:
-       - xnat-db
-     links:
-       - xnat-db
-     environment:
-       SETUP_CRON: "0 3 * * *"
-     volumes:
-       - ./backups:/backups
+    build: ./backup
+    depends_on:
+      - xnat-db
+    links:
+      - xnat-db
+    environment:
+      SETUP_CRON: "0 3 * * *"
+    volumes:
+      - ./backups:/backups
   xnat-nginx:
-     build: ./nginx
-     ports:
-      - "80:80"
-      - "443:443"
-     expose:
-      - "80"
-     links:
-       - xnat-web
-     environment:
-       - TZ=$TIMEZONE
+    build: ./nginx
+    ports:
+     - "80:80"
+     - "443:443"
+    expose:
+     - "80"
+    links:
+      - xnat-web
+    environment:
+      - TZ=$TIMEZONE
   prometheus:
-     image: prom/prometheus
-     volumes:
-       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-     command:
-       - '--config.file=/etc/prometheus/prometheus.yaml'
-     ports:
-       - '9090:9090'
-     links:
-       - cadvisor
-     environment:
-       - TZ=$TIMEZONE
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - '9090:9090'
+    links:
+      - cadvisor
+    environment:
+      - TZ=$TIMEZONE
   cadvisor:
-     image: google/cadvisor
-     volumes:
-       - /:/rootfs:ro
-       - /var/run:/var/run:rw
-       - /sys:/sys:ro
-       - /var/lib/docker/:/var/lib/docker:ro
-     ports:
-       - "8082:8080"
-     expose:
-       - 8082
-     environment:
-       - TZ=$TIMEZONE
+    image: google/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8082:8080"
+    expose:
+      - 8082
+    environment:
+      - TZ=$TIMEZONE
