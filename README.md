@@ -61,7 +61,7 @@ start up process with
 docker-compose -f docker.compose.yml logs xnat-web -f
 ```
 
-You should now be able to navigate the demo XNAT instance by going to http://<your-host> and log in using username
+You should now be able to navigate the demo XNAT instance by going to http://your-host and log in using username
 'admin' and password 'admin'. 
 
 NOTE that this demo XNAT instance is NOT suitable for production use as image data will be stored in the Tomcat
@@ -109,7 +109,7 @@ You can view the progress of the start up process with
 docker-compose logs xnat-web -f
 ```
 
-Once the initialisation is complete you should be able to navigate the demo XNAT instance by going to http://<your-host> and log in using username
+Once the initialisation is complete you should be able to navigate the demo XNAT instance by going to http://your-host and log in using username
 'admin' and password 'admin' (BE SURE TO CHANGE THIS IN THE ADMIN SETTINGS!!). The first time you login you will be greeted by an initial
 configuration page with which you should change the Site ID and the Administrator email address. It is important to leave all other settings the
 same except the Miscellaneous Settings at the bottom, which you are free to change if desired.
