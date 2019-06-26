@@ -1,119 +1,20 @@
 #!/usr/bin/env bash
+# This scripts configures the XNAT docker compose repository to store image and DB data in external mounts
+# and SSL certificates for HTTPS
+#
+# Author: Tom Close (tom.close@monash.edu)
 
 set -e
+
+source ./configure-basic.sh
 
 # Change to the directory where the configure file is
 pushd $(dirname $0)
 
-echo "------------------------------------------"
-echo "------------------------------------------"
-echo " Docker-compose XNAT Configuration Script"
-echo "------------------------------------------"
-echo "------------------------------------------"
 echo ""
-
-
-if [ -f '.env' ]; then
-    # Load previously saved configuration variables
-    source .env
-else
-    echo "No existing configuration found at '$(pwd)/.env'"
-fi
-
-echo ""
-echo "-----------------------------------------------"
-echo " Configuring logs to be written at $(pwd)/logs"
-echo "-----------------------------------------------"
-
-mkdir -p ./logs/tomcat
-mkdir -p ./logs/xnat
-mkdir -p ./auth
-
-echo ""
-echo "---------------------------"
-echo " Downloading XNAT WAR file"
-echo "---------------------------"
-
-mkdir -p ./webapps
-
-if [ -z "$XNAT_VER" ]; then
-    read -p 'Please enter version of XNAT to download and install [1.7.5.3] (XNAT_VER):' XNAT_VER
-    if [ -z "$XNAT_VER" ]; then
-        XNAT_VER=1.7.5.3
-    fi
-else
-    echo "Loaded saved value for XNAT_VER=$XNAT_VER"
-fi
-
-# Download requested XNAT web version
-mkdir -p downloads
-WEBAPP_DOWNLOAD=./downloads/$XNAT_VER.war
-
-if [ ! -f "$WEBAPP_DOWNLOAD" ]; then
-    wget https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-${XNAT_VER}.war 
-    mv xnat-web-${XNAT_VER}.war $WEBAPP_DOWNLOAD
-else
-    echo "Skipping download of $WEBAPP_DOWNLOAD as it has already been downloaded"
-fi
-
-# Clear out existing webapps and add link to new webapp
-sudo rm -r ./webapps
-mkdir -p ./webapps
-cp $WEBAPP_DOWNLOAD ./webapps/ROOT.war
-
-echo "Moved v$XNAT_VER WAR file to '$(pwd)/webapps/ROOT.war', to upgrade to a later version of XNAT simply replace it with a new WAR file"
-echo "NB: Configuration can be terminated at this stage if you only require a demo XNAT instance (i.e. one brought up by running 'docker-compose -f docker-compose.yml up -d')"
-
-echo ""
-echo "----------------------------"
-echo " Downloading useful plugins"
-echo "----------------------------"
-
-mkdir -p ./plugins
-
-CONTAINER_SERVICE_PLUGIN_VER=2.0.1
-LDAP_AUTH_PLUGIN_VER=1.0.0
-SIMPLE_UPLOAD_PLUGIN_VER=2.04
-
-# Container service plugin
-if [ ! -f ./plugins/container-service-plugin.jar ]; then
-    echo "Downloading container service plugin"
-    pushd downloads
-    wget https://github.com/NrgXnat/container-service/releases/download/$CONTAINER_SERVICE_PLUGIN_VER/containers-$CONTAINER_SERVICE_PLUGIN_VER-fat.jar
-    popd
-    mv ./downloads/containers-$CONTAINER_SERVICE_PLUGIN_VER-fat.jar ./plugins/container-service-plugin.jar
-fi
-
-
-# LDAP auth plugin
-if [ ! -f ./plugins/ldap-auth-plugin.jar ]; then
-    echo "Downloading container service plugin"
-    pushd downloads
-    wget https://bitbucket.org/xnatx/ldap-auth-plugin/downloads/xnat-ldap-auth-plugin-$LDAP_AUTH_PLUGIN_VER.jar
-    popd
-    mv ./downloads/xnat-ldap-auth-plugin-$LDAP_AUTH_PLUGIN_VER.jar ./plugins/ldap-auth-plugin.jar
-fi
-
-
-# Non-DICOM uploaded plugin
-if [ ! -f ./plugins/simple-upload-plugin.jar ]; then
-    echo "Downloading simple upload plugin (for non-DICOM uploads)"
-    pushd downloads
-    # Need to fix up the version number of the plugin that is uploaded in the release
-    wget https://github.com/MonashBI/xnat-simple-upload-plugin/releases/download/feature_release$SIMPLE_UPLOAD_PLUGIN_VER/xnat-simple-upload-plugin-2.0.0.jar
-    popd
-    mv ./downloads/xnat-simple-upload-plugin-2.0.0.jar ./plugins/simple-upload-plugin.jar
-fi
-
-# QC pipeline
-docker pull manishkumr/xnat-qc-pipeline
-
-echo "Downloaded plugins for the XNAT container service, simple file uploads, and LDAP authentication providers"
-
-echo ""
-echo "-------------------------"
-echo " Configuration variables"
-echo "-------------------------"
+echo "-----------------------------"
+echo " Set Configuration variables"
+echo "-----------------------------"
 
 if [ -z "$SITE" ]; then
     read -p 'Please enter domain name: ' SITE
@@ -185,7 +86,10 @@ else
     echo "Loaded saved value for JVM_MEMGB_INIT=$JVM_MEMGB_INIT"
 fi
 
-echo "Recording the following configuration:"
+echo ""
+echo "-------------"
+echo "Configuration"
+echo "-------------"
 echo "\
 SITE=$SITE
 DATA_DIR=$DATA_DIR
@@ -206,7 +110,8 @@ mkdir -p $APP_DIR/ftp
 mkdir -p $APP_DIR/postgres
 
 echo ""
-echo "Wrote configuration variables to $(pwd)/.env and made required sub-directories in $DATA_DIR and $APP_DIR"
+echo "Wrote configuration variables to $(pwd)/.env (which is symlinked to '$(pwd)/config') "
+echo "and made required sub-directories in $DATA_DIR and $APP_DIR"
 
 echo ""
 echo "-----------------------"
@@ -218,8 +123,19 @@ mkdir -p ./certs
 if [ ! -f ./certs/key.key ]; then
     read -p 'Please enter path to SSL key (leave empty to generate + CSR): ' KEY_PATH
     if [ -z "$KEY_PATH" ]; then
+        echo '---------------------------------------------------------------------------------------------------'
+        echo "Generating certificate-signing-request. You will be asked for information about your organisation, "
+        echo "which will be sent to users so they can verify your service."
+        echo "NOTE! Please ensure that you enter the site-name saved in your configuration ('$SITE') "
+        echo "for the fully-qualified domain name (FQDN), otherwise the nginx configuration will break"
+        echo '---------------------------------------------------------------------------------------------------'
+        echo '---------------------------------------------------------------------------------------------------'
+        echo ''
         openssl req -new -newkey rsa:2048 -nodes -keyout ./certs/key.key -out ./certs/cert-sign-request.csr
-        echo "SSL key and certificate signing request generated. Please provide $(pwd)/certs/cert-sign-request.csr to SSL provider and rerun this script when they have provided a certificate in PEM format including full chain to root certificate, pasted in sequence in the same file starting in order site-cert, intermediates, root"
+        echo "SSL key and certificate signing request generated. Please provide $(pwd)/certs/cert-sign-request.csr "
+        echo "to SSL provider and rerun this script when they have provided a certificate in PEM format including "
+        echo "full chain to root certificate, pasted in sequence in the same file starting in order site-cert, "
+        echo "intermediates, root"
     else
         cp $KEY_PATH ./certs/key.key
     fi
@@ -235,8 +151,11 @@ if [ -f ./certs/key.key ] && [ ! -f ./certs/cert.crt ]; then
 fi
 
 if [ -f ./certs/cert.crt ]; then
-    echo "After brining up the docker composition use the following command to check that the client certs are installed properly. You should see a chain of certificates leading back to a root certificate:"
-    echo "openssl s_client -showcerts -connect $SITE:443"
+    echo "After brining up the docker composition use the following command to check that the client certs are "
+    echo "installed properly. You should see a chain of certificates leading back to a root certificate:"
+    echo ""
+    echo "    openssl s_client -showcerts -connect $SITE:443"
+    echo ""
 fi
 
 # Return to original directory

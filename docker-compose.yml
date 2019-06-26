@@ -22,6 +22,8 @@ services:
       - ./tomcat/xnat-conf.properties:/data/xnat/home/config/xnat-conf.properties
       # Pass docker socket for XNAT container service
       - /var/run/docker.sock:/var/run/docker.sock
+      # Authentication providers
+      - ./auth:/data/xnat/home/config/auth
     expose:
       - "8080"
     depends_on:
