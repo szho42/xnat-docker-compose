@@ -9,8 +9,9 @@
 /.env
 /certs
 /auth
-data
+/data
 *.swp
 /logs
-nginx/nginx-ssl.conf
-downloads
+/nginx/nginx-ssl.conf
+/downloads
+/config-auth

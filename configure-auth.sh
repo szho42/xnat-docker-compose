@@ -21,7 +21,7 @@ echo "--------------------------------------"
 if [ -z "$LDAP_AUTH" ]; then
     read -p 'Would you like to configure LDAP authentication [y/N]: ' LDAP_AUTH
     if [ -z "$LDAP_AUTH" ]; then
-        LDAP_AUTH=Y
+        LDAP_AUTH=N
     else
         # Convert to upper case
         LDAP_AUTH=$(echo "$LDAP_AUTH" | tr '[:lower:]' '[:upper:]')
@@ -47,15 +47,13 @@ fi
 if [ -z "$AAF_AUTH" ]; then
     read -p 'Would you like to configure Australian Access Federation (AAF) authentication [y/N]: ' AAF_AUTH
     if [ -z "$AAF_AUTH" ]; then
-        AAF_AUTH=Y
+        AAF_AUTH=N
     else
         # Convert to upper case
-        AAF_AUTH=$(echo "$LDAP_AUTH" | tr '[:lower:]' '[:upper:]')
-    fi
-    if [ ! -f ./auth/aaf-openid-provider.properties ]; then 
+        AAF_AUTH=$(echo "$AAF_AUTH" | tr '[:lower:]' '[:upper:]')
     fi
 fi
- 
+
 if [ "$AAF_AUTH" == 'Y' ]; then
     if [ ! -f ./auth/aaf-openid-provider.properties ]; then 
         cp ./example-auth-providers/aaf-openid-provider.properties ./auth
@@ -82,12 +80,10 @@ fi
 if [ -z "$GOOGLE_AUTH" ]; then
     read -p 'Would you like to configure Google authentication [y/N]: ' GOOGLE_AUTH
     if [ -z "$GOOGLE_AUTH" ]; then
-        GOOGLE_AUTH=Y
+        GOOGLE_AUTH=N
     else
         # Convert to upper case
-        GOOGLE_AUTH=$(echo "$LDAP_AUTH" | tr '[:lower:]' '[:upper:]')
-    fi
-    if [ ! -f ./auth/google-openid-provider.properties ]; then 
+        GOOGLE_AUTH=$(echo "$GOOGLE_AUTH" | tr '[:lower:]' '[:upper:]')
     fi
 fi
  
@@ -117,7 +113,7 @@ OPENID_AUTH_PLUGIN_VER=1.0.0
 OPENID_AUTH_PLUGIN_RELEASE=20190409.122010-10
 
 # OpenID auth plugin
-if [ "$GOOGLE_AUTH" == 'Y' ] || [ "AAF_AUTH" == 'Y' ]; then
+if [ "$GOOGLE_AUTH" == 'Y' ] || [ "$AAF_AUTH" == 'Y' ]; then
     if [ ! -f ./plugins/openid-auth-plugin.jar ]; then
         echo "Downloading OpenID authentication plugin"
         pushd downloads

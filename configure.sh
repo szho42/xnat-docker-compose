@@ -17,7 +17,7 @@ echo " Set Configuration variables"
 echo "-----------------------------"
 
 if [ -z "$SITE" ]; then
-    read -p 'Please enter domain name: ' SITE
+    read -p 'Please enter domain name (without protocol, e.g. myuni.edu.au): ' SITE
 else
     echo "Loaded saved value for SITE=$SITE"
 fi
