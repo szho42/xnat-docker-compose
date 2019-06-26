@@ -44,8 +44,8 @@ basic configuration with
 ./configure-basic.sh
 ```
 
-which will prompt you for the XNAT version you want to use (1.7.5.3 at the time of writing) perform the most basic
-configuration such as download the XNAT WAR file and create directories to store logs.
+which will prompt you for the XNAT version you want to use (1.7.5.3 is the most recent at the time of writing)
+perform the most basic configuration such as download the XNAT WAR file and create directories to store logs.
 
 After that you can bring up the demo instance with
 
