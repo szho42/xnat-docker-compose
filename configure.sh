@@ -12,6 +12,24 @@ source ./configure-basic.sh
 pushd $(dirname $0)
 
 echo ""
+echo "-------------------------------------"
+echo " Configuring local DB authentication"
+echo "-------------------------------------"
+
+mkdir -p ./auth
+
+if [ ! -f ./auth/localdb-provider.properties ]; then
+    echo "\
+name=Database
+provider.id=localdb
+auth.method=db
+auto.enabled=false
+auto.verified=false
+visible=false" >  ./auth/localdb-provider.properties
+fi
+
+
+echo ""
 echo "-----------------------------"
 echo " Set Configuration variables"
 echo "-----------------------------"

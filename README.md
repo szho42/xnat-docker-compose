@@ -125,18 +125,32 @@ to use an external provider to authenticate your users for security (and so you 
 XNAT supports authentication by external providers via LDAP (e.g. university-wide authentication) and OpenID Connect (e.g. Australian Access Federation
 and Google). In order to get this to work you will need to register your service with the authentication provider, which typically involves them
 assessing your instance and checking that is suitable (i.e. uses SSL). So you will need to have your instance up and running with SSL first before
-you can configure external authentication providers. Once you have, run
+you can configure external authentication providers.
+
+To objtain credentials from AAF email support@aaf.edu.au with the following details:
+
+    1. Your Redirect URL (This must be HTTPS based): e.g. xnat.myuni.edu/openid-login
+    2. A descriptive name for your service: e.g MyUni's XNAT Repository
+    3. Your organisation name (Must be an AAF subscriber): e.g. MyUni University
+    4. An indication of if your service is being used for developing/testing purposes or if it is a
+       production ready service: e.g. Production
+
+To obtain credentials from Google visit https://developers.google.com/identity/protocols/OpenIDConnect
+via the console.developers.google.com developer console. Just ensure you set
+"Authorised redirect URI" == https://$SITE/openid-login.
+
+Once you have the credentials you require, run
 
 ```
 ./configure-auth.sh
 ```
 
-This will prompt you whether you want to enable LDAP, AAF, and/or Google authentication, copy template properties files to `./auth` and download the plugins
-required to run them. After running this script you will need to edit the properties files in `./auth` to add the credentials issued by your authentication
-providers.
+This will prompt you whether you want to enable LDAP, AAF, and/or Google authentication, and generate basic "properties" files
+in the './auth' directory. After running this script you can edit these files to customise the authentication methods.
 
-NOTE this information is required before restarting your XNAT instance otherwise it will error. Rename any unfinished providers so they don't end with 'provider.properties'
-to disable.
+NOTE Please ensure that all the information in the properties files are correct before restarting your XNAT instance
+otherwise it will error. You can rename any unfinished providers so they don't end with 'provider.properties'
+to disable them.
 
 Once the authentication has been properly configured restart the `xnat-web` container
 

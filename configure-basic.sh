@@ -67,17 +67,6 @@ echo "Moved v$XNAT_VER WAR file to '$(pwd)/webapps/ROOT.war', to upgrade to a la
 echo ""
 
 echo ""
-echo "-------------------------------------"
-echo " Configuring local DB authentication"
-echo "-------------------------------------"
-
-mkdir -p ./auth
-
-if [ ! -f ./auth/localdb-provider.properties ]; then
-    cp ./example-auth-providers/localdb-provider.properties ./auth
-fi
-
-echo ""
 echo "----------------------------"
 echo " Downloading useful plugins"
 echo "----------------------------"
