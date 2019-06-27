@@ -14,7 +14,8 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 ## Prerequisites
 
 * [docker](https://www.docker.com/)
-* [docker-compose](http://docs.docker.com/compose) (Which is installed along with docker if you download it from their site)
+* [docker-compose](http://docs.docker.com/compose) (which is installed along with docker if you download it from their site)
+* [openssl](https://www.openssl.org/) (required to generated SSL certificate signing request)
 
 NB: On Linux systems you will need to run Docker with sudo by default. To avoid having to do this you can
 add sudo privileges to Docker using the command
