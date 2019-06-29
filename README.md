@@ -13,12 +13,21 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 
 ## Prerequisites
 
+A POSIX-based (i.e. Unix, Linux or OSX) system (or virtual machine) with the following ports open on its firewall
+
+* 80 (http)    - to all IPs users will access your XNAT from (typically all IPs, i.e. 0.0.0.0/0)
+* 443 (https)  -       "          "          "          "          "          "          "
+* 8104 (DICOM) - to the IPs of devices you will send DICOMs to XNAT DICOM receiver
+
+The latest versions of the following packages
+
 * [docker](https://www.docker.com/)
 * [docker-compose](http://docs.docker.com/compose) (which is installed along with docker if you download it from their site)
 * [openssl](https://www.openssl.org/) (required to generated SSL certificate signing request)
 
-NB: On Linux systems you will need to run Docker with sudo by default. To avoid having to do this you can
-add sudo privileges to Docker using the command
+
+Sudo (administrator) access. On Linux systems you will need to run Docker with sudo by default. To avoid
+having to do this you can add sudo privileges to Docker using the command
 
 ```
 sudo usermod -aG docker ${USER}
