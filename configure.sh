@@ -6,6 +6,8 @@
 
 set -e
 
+FULL_CONFIG=1
+
 source ./configure-basic.sh
 
 # Change to the directory where the configure file is
@@ -86,22 +88,6 @@ if [ -z "$LOCALE" ]; then
     read -p 'Please enter locale for server, e.g. en_AU (LOCALE): ' LOCALE
 else
     echo "Loaded saved value for LOCALE=$LOCALE"
-fi
-
-if [ -z "$JVM_MEMGB" ]; then
-    read -p 'Please enter amount of memory to allocate to the Java virtual machine that runs the XNAT application, typically most of the available memory leaving a 3-4 GB for the other containers and general purpose (JVM_MEMGB): ' JVM_MEMGB
-else
-    echo "Loaded saved value for JVM_MEMGB=$JVM_MEMGB"
-fi
-
-if [ -z "$JVM_MEMGB_INIT" ]; then
-    # The amount of memory allocated to the JVM on startup
-    # Half the max allocated memory or minimum of 1GB
-    JVM_MEMGB_INIT=$(( $JVM_MEMGB / 2 ))
-    JVM_MEMGB_INIT=$(( $JVM_MEMGB_INIT>1?$JVM_MEMGB_INIT:1 ))
-    echo "Assuming a value of ${JVM_MEMGB_INIT}GB for the JVM initial memory (feel free to edit)"
-else
-    echo "Loaded saved value for JVM_MEMGB_INIT=$JVM_MEMGB_INIT"
 fi
 
 echo ""
