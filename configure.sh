@@ -78,18 +78,6 @@ if [ ! -d $DB_BACKUP_DIR ]; then
     exit
 fi
 
-if [ -z "$TIMEZONE" ]; then
-    read -p 'Please enter time-zone for server, e.g. Australia/Melbourne (TIMEZONE): ' TIMEZONE
-else
-    echo "Loaded saved value for TIMEZONE=$TIMEZONE"
-fi
-
-if [ -z "$LOCALE" ]; then
-    read -p 'Please enter locale for server, e.g. en_AU (LOCALE): ' LOCALE
-else
-    echo "Loaded saved value for LOCALE=$LOCALE"
-fi
-
 echo ""
 echo "-------------"
 echo "Configuration"

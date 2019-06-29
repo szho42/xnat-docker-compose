@@ -66,6 +66,18 @@ cp $WEBAPP_DOWNLOAD ./webapps/ROOT.war
 echo "Moved v$XNAT_VER WAR file to '$(pwd)/webapps/ROOT.war', to upgrade to a later version of XNAT simply replace it with a new WAR file"
 echo ""
 
+if [ -z "$TIMEZONE" ]; then
+    read -p 'Please enter time-zone for server, e.g. Australia/Melbourne (TIMEZONE): ' TIMEZONE
+else
+    echo "Loaded saved value for TIMEZONE=$TIMEZONE"
+fi
+
+if [ -z "$LOCALE" ]; then
+    read -p 'Please enter locale for server, e.g. en_AU (LOCALE): ' LOCALE
+else
+    echo "Loaded saved value for LOCALE=$LOCALE"
+fi
+
 if [ -z "$JVM_MEMGB" ]; then
     read -p 'Please enter amount of memory to allocate to the Java virtual machine that runs the XNAT application, typically most of the available memory leaving a 3-4 GB for the other containers and general purpose (JVM_MEMGB): ' JVM_MEMGB
 else
@@ -125,9 +137,11 @@ if [ ! "$FULL_CONFIG" ]; then
     echo "Configuration"
     echo "-------------"
     echo "\
-    XNAT_VER=$XNAT_VER
-    JVM_MEMGB=$JVM_MEMGB
-    JVM_MEMGB_INIT=$JVM_MEMGB_INIT" | tee .env
+XNAT_VER=$XNAT_VER
+JVM_MEMGB=$JVM_MEMGB
+JVM_MEMGB_INIT=$JVM_MEMGB_INIT
+TIMEZONE=$TIMEZONE
+LOCALE=$LOCALE" | tee .env
 fi
 
 popd
