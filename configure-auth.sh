@@ -223,6 +223,8 @@ openid.google.familyNameProperty=family_name" >> ./auth/openid-provider.properti
 
     fi
 
+    # Restrict access to provider properties to protect username/secrets
+    chmod 600 ./auth/openid-provider.properties
 
 fi
 
@@ -267,6 +269,9 @@ auto.enabled=true
 auto.verified=true
 visible=true" > ./auth/ldap-provider.properties
 
+        # Restrict access to provider properties
+        chmod 600 ./auth/ldap-provider.properties
+
      else
         echo "Using existing LDAP authentication providers file at $(pwd)/auth/ldap-provider.properties,"
      fi
@@ -293,3 +298,5 @@ GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
 LDAP_AUTH=$LDAP_AUTH" | tee config-auth
 
+# Restrict permissions to config_auth as it contains connection secrets
+chmod 600 config_auth
