@@ -4,9 +4,7 @@
 # and files in /etc/cron.d. These files also have username fields,
 # that none of the other crontabs do.
 
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
+0 3 * * *  /backup
 # disable all default crons
 # m h dom mon dow user	command
 #17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
