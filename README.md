@@ -161,12 +161,9 @@ Although this typically won't be neccessary and you are on your own from then on
 
 
 ## Setup postgres backup
-Postgres backups are scheduled to run at 0300 hrs everyday but can be configures by modifying `SETUP_CRON` environment under `xnat-backup` service.
+Postgres backups are scheduled to run at 0300 hrs everyday but can be configures by modifying crontab file environment under backup directory.
 ```
-xnat-backup:
-     ...
-     environment:
-       SETUP_CRON: "0 3 * * *"
+0 3 * * *  /backup
 ```
 The `xnat-backup` service is configured to create nighly backups under `backups` directory, but can be configured by overriding this value in `docker-compose.override.yml` file.
 ```
