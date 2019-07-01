@@ -27,7 +27,7 @@ services:
     depends_on:
       - xnat-db
     environment:
-      - JAVA_OPTS=-Xms16g -Xmx40g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+      - JAVA_OPTS=-Xms${JVM_MEMGB_INIT}g -Xmx${JVM_MEMGB}g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - XNAT_HOME=/data/xnat/home
       - TZ=$TIMEZONE
   xnat-db:
