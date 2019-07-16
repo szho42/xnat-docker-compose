@@ -4,7 +4,7 @@ services:
     build:
       context: ./tomcat
       args:
-        LOCALE: $LOCALE
+          TIMEZONE: Australia/Melbourne
     ports:
       - "8081:8080"
       - "8104:8104"
@@ -27,9 +27,8 @@ services:
     depends_on:
       - xnat-db
     environment:
-      - JAVA_OPTS=-Xms${JVM_MEMGB_INIT}g -Xmx${JVM_MEMGB}g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+      - JAVA_OPTS=-Xms512m -Xmx1g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - XNAT_HOME=/data/xnat/home
-      - TZ=$TIMEZONE
   xnat-db:
     build: ./postgres
     expose:

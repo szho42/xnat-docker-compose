@@ -66,34 +66,6 @@ cp $WEBAPP_DOWNLOAD ./webapps/ROOT.war
 echo "Moved v$XNAT_VER WAR file to '$(pwd)/webapps/ROOT.war', to upgrade to a later version of XNAT simply replace it with a new WAR file"
 echo ""
 
-if [ -z "$TIMEZONE" ]; then
-    read -p 'Please enter time-zone for server, e.g. Australia/Melbourne (TIMEZONE): ' TIMEZONE
-else
-    echo "Loaded saved value for TIMEZONE=$TIMEZONE"
-fi
-
-if [ -z "$LOCALE" ]; then
-    read -p 'Please enter locale for server, e.g. en_AU (LOCALE): ' LOCALE
-else
-    echo "Loaded saved value for LOCALE=$LOCALE"
-fi
-
-if [ -z "$JVM_MEMGB" ]; then
-    read -p 'Please enter amount of memory to allocate to the Java virtual machine that runs the XNAT application, typically most of the available memory leaving a 3-4 GB for the other containers and general purpose (JVM_MEMGB): ' JVM_MEMGB
-else
-    echo "Loaded saved value for JVM_MEMGB=$JVM_MEMGB"
-fi
-
-if [ -z "$JVM_MEMGB_INIT" ]; then
-    # The amount of memory allocated to the JVM on startup
-    # Half the max allocated memory or minimum of 1GB
-    JVM_MEMGB_INIT=$(( $JVM_MEMGB / 2 ))
-    JVM_MEMGB_INIT=$(( $JVM_MEMGB_INIT>1?$JVM_MEMGB_INIT:1 ))
-    echo "Assuming a value of ${JVM_MEMGB_INIT}GB for the JVM initial memory (feel free to edit)"
-else
-    echo "Loaded saved value for JVM_MEMGB_INIT=$JVM_MEMGB_INIT"
-fi
-
 echo ""
 echo "----------------------------"
 echo " Downloading useful plugins"
@@ -116,7 +88,7 @@ else
 fi
 
 
-# Non-DICOM uploaded plugin
+# Simple upload plugin
 if [ ! -f ./plugins/simple-upload-plugin.jar ]; then
     echo "Downloading simple upload plugin (for non-DICOM uploads)"
     pushd downloads
@@ -130,18 +102,5 @@ fi
 
 # QC pipeline
 # docker pull manishkumr/xnat-qc-pipeline
-
-if [ ! "$FULL_CONFIG" ]; then
-    echo ""
-    echo "-------------"
-    echo "Configuration"
-    echo "-------------"
-    echo "\
-XNAT_VER=$XNAT_VER
-JVM_MEMGB=$JVM_MEMGB
-JVM_MEMGB_INIT=$JVM_MEMGB_INIT
-TIMEZONE=$TIMEZONE
-LOCALE=$LOCALE" | tee .env
-fi
 
 popd

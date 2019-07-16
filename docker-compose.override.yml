@@ -6,6 +6,9 @@ services:
       - ./certs/key.key:/etc/nginx/certs/key.key
       - ./nginx/nginx-ssl.conf:/etc/nginx/nginx.conf
   xnat-web:
+    build:
+      args:
+        TIMEZONE: $TIMEZONE
     volumes:
       # Directory where image data is stored
       - $DATA_DIR/archive:/data/xnat/archive
@@ -17,6 +20,9 @@ services:
       - $APP_DIR/ftp:/data/xnat/ftp
       # Authentication providers
       - ./auth:/data/xnat/home/config/auth
+    environment:
+      # Set JVM memory limits, Xmx == max memory, Xms == initial memory
+      - JAVA_OPTS=-Xms${JVM_MEMGB_INIT}g -Xmx${JVM_MEMGB}g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
   xnat-backup:
     volumes:
       - $DB_BACKUP_DIR:/backups
