@@ -43,8 +43,6 @@ services:
       - xnat-db
     links:
       - xnat-db
-    environment:
-      SETUP_CRON: "0 3 * * *"
     volumes:
       - ./backups:/backups
   xnat-nginx:
