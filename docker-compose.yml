@@ -35,8 +35,6 @@ services:
       - "5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
-    environment:
-      - TZ=$TIMEZONE
   xnat-backup:
     build: ./backup
     depends_on:
@@ -54,8 +52,6 @@ services:
      - "80"
     links:
       - xnat-web
-    environment:
-      - TZ=$TIMEZONE
   prometheus:
     image: prom/prometheus
     volumes:
@@ -79,5 +75,4 @@ services:
       - "8082:8080"
     expose:
       - 8082
-    environment:
-      - TZ=$TIMEZONE
+

@@ -17,7 +17,7 @@ A POSIX-based (i.e. Unix, Linux or OSX) system (or virtual machine) with the fol
 
 * 80 (http)    - to all IPs users will access your XNAT from (typically all IPs, i.e. 0.0.0.0/0)
 * 443 (https)  -       "          "          "          "          "          "          "
-* 8104 (DICOM) - to the IPs of devices you will send DICOMs to XNAT DICOM receiver
+* 8104 (DICOM) - to the IPs of devices you will send DICOMs to XNAT DICOM receiver from
 
 The latest versions of the following packages
 
@@ -47,8 +47,8 @@ NOTE that all subsequent commands should be run from the repository root directo
 
 2. Try-out "Demo" XNAT instance (optional)
 
-If you just want to check out XNAT and don't want to bother with SSL certs and the like at this point you can perform
-basic configuration with 
+If you just want to check out XNAT and don't want to bother with SSL certs, locations for securely storing the
+imaging data, and the like at this point you can perform basic configuration with 
 
 ```
 ./configure-basic.sh
@@ -91,13 +91,14 @@ To configure XNAT for production use you should run
 ./configure.sh
 ```
 
-which will ask for storage locations for imaging data, caches, XNAT's SQL database and backups (in addition to the basic config from previous step).
-It will also ask you to provide SSL certificates for the SSL configuration. If you don't already have appropriate certificates then
-it can generate an appropriate certificate-signing-request for you to send to your provider. Once your provider has issued the certificates
-then rerun the `configure.sh` script to install the certificate in the correct location
+which will ask for storage locations for imaging data, caches, XNAT's SQL database and backups (in addition to the basic
+config from previous step).  It will also ask you to provide SSL certificates for the SSL configuration. If you don't
+already have appropriate certificates then it can generate an appropriate certificate-signing-request for you to
+send to your provider. Once your provider has issued the certificates then rerun the `configure.sh` script to install
+the certificate in the correct location
 
-NOTE that the certificate must in PEM format including the full chain back to a root certificate, i.e. pasted in order within the same file 
-starting from site-cert, then intermediates and finally root
+NOTE that the certificate must in PEM format including the full chain back to a root certificate, i.e. pasted in order within
+the same file starting from site-cert, then intermediates and finally root
 
 All configuration variables are stored in the './.env' file, which is symlinked to './config' for convenience. You can
 edit most of the saved variables directly in there if they change at a later date and they will be picked up by docker-compose.
@@ -119,22 +120,25 @@ You can view the progress of the start up process with
 docker-compose logs xnat-web -f
 ```
 
-Once the initialisation is complete you should be able to navigate the demo XNAT instance by going to http://your-host and log in using username
-'admin' and password 'admin' (BE SURE TO CHANGE THIS IN THE ADMIN SETTINGS!!). The first time you login you will be greeted by an initial
-configuration page with which you should change the Site ID and the Administrator email address. It is important to leave all other settings the
-same except the Miscellaneous Settings at the bottom, which you are free to change if desired.
+Once the initialisation is complete you should be able to navigate the demo XNAT instance by going to http://your-host and log
+in using username 'admin' and password 'admin' (BE SURE TO CHANGE THIS IN THE ADMIN SETTINGS!!). The first time you login
+you will be greeted by an initial configuration page with which you should change the Site ID and the Administrator
+email address. It is important to leave all other settings the same except the Miscellaneous Settings at the bottom,
+which you are free to change as desired.
 
 Additional administration settings (including changing the 'admin' user password) can be configured from the 'Administer' menu item.
 
 5. Configure advanced authentication options
 
-By default user authentication is peformed against user passwords stored in XNAT's Postgres DB. While these passwords are salted it is recommended
-to use an external provider to authenticate your users for security (and so you don't receive tonnes of annoying "I forgot my password" emails ;).
+By default user authentication is peformed against user passwords stored in XNAT's Postgres DB. While these passwords are
+salted it is recommended to use an external provider to authenticate your users for security (and so you don't receive
+tonnes of annoying "I forgot my password" emails ;).
 
-XNAT supports authentication by external providers via LDAP (e.g. university-wide authentication) and OpenID Connect (e.g. Australian Access Federation
-and Google). In order to get this to work you will need to register your service with the authentication provider, which typically involves them
-assessing your instance and checking that is suitable (i.e. uses SSL). So you will need to have your instance up and running with SSL first before
-you can configure external authentication providers.
+XNAT supports authentication by external providers via LDAP (e.g. university-wide authentication) and OpenID Connect
+(e.g. Australian Access Federation and Google). In order to get this to work you will need to register your service
+with the authentication provider, which typically involves them assessing your instance and checking that is suitable
+(i.e. uses SSL). So you will need to have your instance up and running with SSL first before you can configure external
+authentication providers.
 
 To objtain credentials from AAF email support@aaf.edu.au with the following details:
 
@@ -172,24 +176,29 @@ e.g. "Enabled Authentication Providers": localdb,ldap1,google-openid, and restar
 
 6. Customisations (optional)
 
-The default configuration is sufficient to run the deployment. However, the following files can be modified if you really want to fine-tune the configuration.
-Although this typically won't be neccessary and you are on your own from then on! ;)
+The default configuration is sufficient to run the deployment. However, the following files can be modified if you really want to
+fine-tune the configuration.  Although this typically won't be neccessary and you are on your own from then on! ;)
 
     - **docker-compose.yml**: How the different containers are deployed.
     - **postgres/XNAT.sql**: Database configuration. Mainly used to customize the database user or password. See [Configuring PostgreSQL for XNAT](https://wiki.xnat.org/documentation/getting-started-with-xnat-1-7/installing-xnat-1-7/configuring-postgresql-for-xnat).
     - **tomcat/server.xml**: Configures the Tomcat server that runs the XNAT web application
     - **tomcat/xnat-conf.properties**: Configures the XNAT web application, primarily to connect to the Postgres DB
-    - **tomcat/tomcat-users.xml**: [Tomcat manager](https://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html) settings. It is highly recommended to change the login from "admin" with password "admin" to the server if it is going live.
+    - **tomcat/tomcat-users.xml**: [Tomcat manager](https://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html) settings.
     - **tomcat/xnat-conf.properties**: XNAT database configuration properties. There is a default version
     - **prometheus/prometheus.yaml**: Prometheus configuration
 
 
 ## Setup postgres backup
-Postgres backups are scheduled to run at 0300 hrs everyday but can be configures by modifying crontab file environment under backup directory.
+Postgres backups are scheduled to run at 0300 hrs everyday but can be configures by modifying crontab file environment
+under backup directory.
+
 ```
 0 3 * * *  /backup
 ```
-The `xnat-backup` service is configured to create nighly backups under `backups` directory, but can be configured by overriding this value in `docker-compose.override.yml` file.
+
+The `xnat-backup` service is configured to create nighly backups under `backups` directory, but can be configured by
+overriding this value in `docker-compose.override.yml` file.
+
 ```
 xnat-backup:
        volumes:
@@ -248,12 +257,11 @@ docker-compose up -d
 
 - Browse to http://localhost:9090/graph
 
-     To view a graph of total cpu usage for each container (nginx/tomcat/postgres.cAdvisor/Prometheus) execute the following query in the query box
-     `container_cpu_usage_seconds_total{container_label_com_docker_compose_project="xnatdocker"}`
+     To view a graph of total cpu usage for each container (nginx/tomcat/postgres.cAdvisor/Prometheus) execute the
+     following query in the query box `container_cpu_usage_seconds_total{container_label_com_docker_compose_project="xnatdocker"}`
 
 - Browse to http://localhost:8082/docker/
 
      Docker containers running on this host are listed under Subcontainers
-
 
      Click on any subcontainer to view its metrics
