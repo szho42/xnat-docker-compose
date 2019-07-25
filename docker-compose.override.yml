@@ -1,6 +1,9 @@
 version: '3'
 services:
   xnat-nginx:
+    build:
+      args:
+        TIMEZONE: $TIMEZONE
     volumes:
       - ./certs/cert.crt:/etc/nginx/certs/cert.crt
       - ./certs/key.key:/etc/nginx/certs/key.key
@@ -24,8 +27,14 @@ services:
       # Set JVM memory limits, Xmx == max memory, Xms == initial memory
       - JAVA_OPTS=-Xms${JVM_MEMGB_INIT}g -Xmx${JVM_MEMGB}g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
   xnat-backup:
+    build:
+      args:
+        TIMEZONE: $TIMEZONE
     volumes:
       - $DB_BACKUP_DIR:/backups
   xnat-db:
+    build:
+      args:
+        TIMEZONE: $TIMEZONE
     volumes:
       - $APP_DIR/postgres:/var/lib/postgresql/data
