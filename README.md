@@ -33,6 +33,10 @@ having to do this you can add sudo privileges to Docker using the command
 sudo usermod -aG docker ${USER}
 ```
 
+NOTE Please ensure that your docker's "/var/lib/docker" directory is on a volume with sufficient space to hold
+all the built containers + any pipeline containers you may want to install as part of the container service
+(>100 GB recommended)
+
 ## Usage
 
 
