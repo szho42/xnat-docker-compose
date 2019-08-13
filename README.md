@@ -33,6 +33,8 @@ having to do this you can add sudo privileges to Docker using the command
 sudo usermod -aG docker ${USER}
 ```
 
+NB: You will need to log out and in again afterwards
+
 ## Usage
 
 
