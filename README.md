@@ -104,7 +104,9 @@ send to your provider. Once your provider has issued the certificates then rerun
 the certificate in the correct location
 
 NOTE that the certificate must in PEM format including the full chain back to a root certificate, i.e. pasted in order within
-the same file starting from site-cert, then intermediates and finally root
+the same file starting from site-cert, then intermediates and finally root. If only the final certificate is provided
+(i.e. not the full chain), then access to the site via the web UI will likely still work (for well known providers at least)
+but REST API access won't.
 
 All configuration variables are stored in the './.env' file, which is symlinked to './config' for convenience. You can
 edit most of the saved variables directly in there if they change at a later date and they will be picked up by docker-compose.
