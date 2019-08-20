@@ -1,11 +1,15 @@
 FROM alpine:3.7
 
-MAINTAINER Manish Kumar <rishimanish123@gmail.com>
+LABEL maintainer="Manish Kumar <rishimanish123@gmail.com>"
 
-#install postgres client
+#install postgres client and set timezone
+ARG TIMEZONE
 RUN apk update \
- && apk add --no-cache --virtual .build-deps \
- postgresql-client
+    && apk add --no-cache --virtual .build-deps postgresql-client tzdata && \
+    ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
+    echo $TIMEZONE > /etc/timezone && \
+    apk del .build-deps
+ENV TZ $TIMEZONE
 
 # disable default crontab
 COPY backup.sh /backup

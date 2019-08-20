@@ -37,6 +37,8 @@ NOTE Please ensure that your docker's "/var/lib/docker" directory is on a volume
 all the built containers + any pipeline containers you may want to install as part of the container service
 (>100 GB recommended)
 
+NB: You will need to log out and in again afterwards
+
 ## Usage
 
 

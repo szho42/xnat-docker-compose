@@ -30,13 +30,19 @@ services:
       - JAVA_OPTS=-Xms512m -Xmx1g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - XNAT_HOME=/data/xnat/home
   xnat-db:
-    build: ./postgres
+    build:
+      context: ./postgres
+      args:
+          TIMEZONE: Australia/Melbourne
     expose:
       - "5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
   xnat-backup:
-    build: ./backup
+    build:
+      context: ./backup
+      args:
+          TIMEZONE: Australia/Melbourne
     depends_on:
       - xnat-db
     links:
@@ -44,7 +50,10 @@ services:
     volumes:
       - ./backups:/backups
   xnat-nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      args:
+          TIMEZONE: Australia/Melbourne
     ports:
      - "80:80"
      - "443:443"
@@ -62,8 +71,6 @@ services:
       - '9090:9090'
     links:
       - cadvisor
-    environment:
-      - TZ=$TIMEZONE
   cadvisor:
     image: google/cadvisor
     volumes:
@@ -75,4 +82,3 @@ services:
       - "8082:8080"
     expose:
       - 8082
-
