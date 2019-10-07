@@ -39,9 +39,9 @@ echo "---------------------------"
 mkdir -p ./webapps
 
 if [ -z "$XNAT_VER" ]; then
-    read -p 'Please enter version of XNAT to download and install [1.7.5.3] (XNAT_VER):' XNAT_VER
+    read -p 'Please enter version of XNAT to download and install [1.7.5.6] (XNAT_VER):' XNAT_VER
     if [ -z "$XNAT_VER" ]; then
-        XNAT_VER=1.7.5.3
+        XNAT_VER=1.7.5.6
     fi
 else
     echo "Loaded saved value for XNAT_VER=$XNAT_VER"

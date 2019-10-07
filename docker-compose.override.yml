@@ -16,7 +16,7 @@ services:
       # Directory where image data is stored
       - $DATA_DIR/archive:/data/xnat/archive
       # Working and temporary store directories
-      - /mnt/cache/prearchive:/data/xnat/prearchive
+      - $APP_DIR/prearchive:/data/xnat/prearchive
       - $APP_DIR/pipeline:/data/xnat/pipeline
       - $APP_DIR/build:/data/xnat/build
       - $APP_DIR/cache:/data/xnat/cache
