@@ -26,6 +26,8 @@ services:
     environment:
       # Set JVM memory limits, Xmx == max memory, Xms == initial memory
       - JAVA_OPTS=-Xms${JVM_MEMGB_INIT}g -Xmx${JVM_MEMGB}g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+      - POSTGRES_HOST_AUTH_METHOD=dont-trust
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
   xnat-backup:
     build:
       args:

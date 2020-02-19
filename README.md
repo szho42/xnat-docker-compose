@@ -139,8 +139,7 @@ Additional administration settings (including changing the 'admin' user password
 5. Configure advanced authentication options
 
 By default user authentication is peformed against user passwords stored in XNAT's Postgres DB. While these passwords are
-salted it is recommended to use an external provider to authenticate your users for security (and so you don't receive
-tonnes of annoying "I forgot my password" emails ;).
+salted it is recommended to use an external provider to authenticate your users for security.
 
 XNAT supports authentication by external providers via LDAP (e.g. university-wide authentication) and OpenID Connect
 (e.g. Australian Access Federation and Google). In order to get this to work you will need to register your service

@@ -43,6 +43,21 @@ fi
 # Replace instances of server name with value of site
 sed "s/server_name SITE/server_name $SITE/g" ./nginx/nginx-ssl.conf.template > ./nginx/nginx-ssl.conf
 
+echo ""
+echo "-----------------------"
+echo " Configure Postgres DB"
+echo "-----------------------"
+
+if [ -z "$POSTGRES_PASSWORD" ]; then
+    read -p 'Please enter master password for Postgres DB: ' POSTGRES_PASSWORD
+    if [ -z "$POSTGRES_PASSWORD" ]; then
+        echo "ERROR: Postgres master password cannot be blank"
+        exit
+    fi
+else
+    echo "Loaded saved value for POSTGRES_PASSWORD"
+fi
+
 if [ -z "$DATA_DIR" ]; then
     read -p 'Please enter location for primary data directory, i.e. SHOULD BE BACKED UP!! (DATA_DIR): ' DATA_DIR
 else
@@ -105,6 +120,7 @@ echo "Configuration"
 echo "-------------"
 echo "\
 SITE=$SITE
+POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 DATA_DIR=$DATA_DIR
 APP_DIR=$APP_DIR
 DB_BACKUP_DIR=$DB_BACKUP_DIR
@@ -155,7 +171,7 @@ fi
 
 if [ -f ./certs/key.key ] && [ ! -f ./certs/cert.crt ]; then
     read -p "Please enter path to SSL certificate provided for $(pwd)/certs/cert-sign-request.csr in PEM format including full chain to root certificate, pasted in sequence in the same file starting in order site-cert, intermediates, root (leave empty to quit this script): " CERT_PATH
-    if [ -z CERT_PATH ]; then
+    if [ -z $CERT_PATH ]; then
         echo "No SSL certificate provided, quitting"
     else
         cp $CERT_PATH ./certs/cert.crt
