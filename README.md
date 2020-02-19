@@ -66,7 +66,7 @@ perform the most basic configuration such as download the XNAT WAR file and crea
 After that you can bring up the demo instance with
 
 ```
-docker-compose -f docker.compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 which will build the required docker images and launch them. During initialisation
@@ -74,7 +74,7 @@ XNAT will create all SQL tables so the process can take several minutes. You can
 start up process with 
 
 ```
-docker-compose -f docker.compose.yml logs xnat-web -f
+docker-compose -f docker-compose.yml logs -f xnat-web
 ```
 
 You should now be able to navigate the demo XNAT instance by going to http://your-host and log in using username
@@ -125,7 +125,7 @@ As with the demo instance, during initialisation XNAT will create all SQL tables
 You can view the progress of the start up process with 
 
 ```
-docker-compose logs xnat-web -f
+docker-compose logs -f xnat-web
 ```
 
 Once the initialisation is complete you should be able to navigate the demo XNAT instance by going to http://your-host and log
