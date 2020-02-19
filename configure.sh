@@ -163,7 +163,7 @@ if [ -f ./certs/key.key ] && [ ! -f ./certs/cert.crt ]; then
 fi
 
 if [ -f ./certs/cert.crt ]; then
-    echo "After brining up the docker composition use the following command to check that the client certs are "
+    echo "After bringing up the docker composition use the following command to check that the client certs are "
     echo "installed properly. You should see a chain of certificates leading back to a root certificate:"
     echo ""
     echo "    openssl s_client -showcerts -connect $SITE:443"
