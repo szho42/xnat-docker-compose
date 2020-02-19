@@ -69,9 +69,17 @@ After that you can bring up the demo instance with
 docker-compose -f docker-compose.yml up -d
 ```
 
-which will build the required docker images and launch them. During initialisation
-XNAT will create all SQL tables so the process can take several minutes. You can view the progress of the
-start up process with 
+which will build the required docker images and launch them. You can see if this has been
+successful with
+
+```
+docker-compose ps
+```
+
+which should show all containers being in the 'Up' state.
+
+During initialisation XNAT will create all SQL tables so the process can take several
+minutes. You can view the progress of the start up process with 
 
 ```
 docker-compose -f docker-compose.yml logs -f xnat-web
