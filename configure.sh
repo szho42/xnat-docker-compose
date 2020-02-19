@@ -155,7 +155,7 @@ fi
 
 if [ -f ./certs/key.key ] && [ ! -f ./certs/cert.crt ]; then
     read -p "Please enter path to SSL certificate provided for $(pwd)/certs/cert-sign-request.csr in PEM format including full chain to root certificate, pasted in sequence in the same file starting in order site-cert, intermediates, root (leave empty to quit this script): " CERT_PATH
-    if [ ! -z CERT_PATH ]; then
+    if [ -z CERT_PATH ]; then
         echo "No SSL certificate provided, quitting"
     else
         cp $CERT_PATH ./certs/cert.crt
