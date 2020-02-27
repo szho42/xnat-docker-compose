@@ -298,5 +298,5 @@ GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
 LDAP_AUTH=$LDAP_AUTH" | tee config-auth
 
-# Restrict permissions to config_auth as it contains connection secrets
-chmod 600 config_auth
+# Restrict permissions to config-auth as it contains connection secrets
+chmod 600 config-auth
