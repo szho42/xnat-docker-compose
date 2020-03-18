@@ -3,3 +3,6 @@
 /webapps
 /postgres-data
 /.project
+/logs
+.history
+/downloads
