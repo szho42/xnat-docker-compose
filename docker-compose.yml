@@ -29,6 +29,7 @@ services:
     environment:
       - JAVA_OPTS=-Xms512m -Xmx1g -Dxnat.home=/data/xnat/home -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - XNAT_HOME=/data/xnat/home
+    restart: unless-stopped
   xnat-db:
     build:
       context: ./postgres
@@ -40,6 +41,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: unless-stopped
   xnat-backup:
     build:
       context: ./backup
@@ -51,6 +53,7 @@ services:
       - xnat-db
     volumes:
       - ./backups:/backups
+    restart: unless-stopped
   xnat-nginx:
     build:
       context: ./nginx
@@ -63,6 +66,7 @@ services:
      - "80"
     links:
       - xnat-web
+    restart: unless-stopped
   prometheus:
     image: prom/prometheus
     volumes:
@@ -73,6 +77,7 @@ services:
       - '9090:9090'
     links:
       - cadvisor
+    restart: unless-stopped
   cadvisor:
     image: google/cadvisor
     volumes:
@@ -84,5 +89,6 @@ services:
       - "8082:8080"
     expose:
       - 8082
+    restart: unless-stopped
 volumes:
     postgres-data:

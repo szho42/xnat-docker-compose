@@ -38,5 +38,3 @@ services:
     build:
       args:
         TIMEZONE: $TIMEZONE
-    volumes:
-      - $APP_DIR/postgres:/var/lib/postgresql/data
