@@ -1,4 +1,4 @@
-FROM postgres:9.4-alpine
+FROM postgres:12.6-alpine
 
 LABEL maintainer="Manish Kumar <rishimanish123@gmail.com>"
 
